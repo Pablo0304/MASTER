@@ -1,0 +1,9 @@
+-Conceptos claves de un Grid:
+-Descripción de componentes:
+-
+
+
+
+???
+-"Si queremos montar un Grid necesitamos VO, procesos, servicios y jobs(trabajos)".
+-Globus Toolkit va a ser lo que usemos en prácticas.

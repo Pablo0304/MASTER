@@ -1,0 +1,3 @@
+-Comandos:
+  -Generar Proxy: grid-proxy-init -valid 0:10 -out proxy_10_min.pem
+  -Conseguir información del proxy: grid-proxy-info -file proxy_10_min.pem -subject -issuer

@@ -1,0 +1,19 @@
+-¿Cómo hacemos que un Grid sea seguro?:
+-Conceptos clave de Seguridad en el Grid:
+  -Pag. 11
+  -...
+-Necesidades básicas para seguridad:
+  -Aut. Receptor.
+  -Aut. Emisor.
+  -Integridad datos.
+  -Confidencialidad de datos.
+-Lo que haces cuando pides una clave:
+  1.-Generas tu Clave Privada y tu Clave Pública.
+  2.-Envías la CPub a la CA.
+  3.-El pibe del ayto. pilla la CPriv de la CA.
+  4.-...
+  Necesito preguntar al gpt porque es un lío y me están faltando pasos.
+
+
+???
+-En firma asimétrica, siempre se firma con la privada porque con la pública se puede saber si soy yo, en el caso de encriptación puede ser como quieras (preguntar para confirmar con GPT).

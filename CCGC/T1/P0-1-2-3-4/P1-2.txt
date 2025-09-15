@@ -1,0 +1,9 @@
+-Comandos en orden:
+  -CA:
+    -Crear una CA local para certificados X.509: sudo grid-ca-create -force
+      -"Force" evita confirmaciones.
+      -EN ESTE CASO, la contraseña va a ser la misma que la del acceso a la MV (así no me olvido).
+    -Deberemos pasarle la CPub al cliente pero no hace falta ahora porque lo tenemos en la misma máquina.
+  -Cliente:
+    -Crearemos una petición de Certificado de usuario junto con la CPub y la CPriv: grid-cert-request -ca -int -dir
+    -Firmaremos la petición de certificado: sudo grid-ca-sign -in usercert_request.pem -out usercert.pem

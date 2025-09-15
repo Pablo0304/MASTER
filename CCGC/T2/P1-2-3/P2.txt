@@ -1,0 +1,9 @@
+-Comandos:
+  -Creamos el ejecutable.
+  -Lanzar el script mediante "globus-job-run" en la máquina de vuestro compañero:
+    globus-job-run josegqui.ccgc.mucnap.upv.es mi_script.sh hostname
+    -Error: GRAM Job failed because the executable does not exist (error code 5)
+      -Esto sucede porque no se indica el archivo en cuestión.
+  -Segundo intento de lanzamiento:
+    globus-job-run josegqui.ccgc.mucnap.upv.es -s mi_script.sh hostname
+    -Ahora sí se lanza (puede ser con "-s" o con "-stage").

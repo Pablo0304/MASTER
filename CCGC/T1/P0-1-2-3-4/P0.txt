@@ -1,0 +1,2 @@
+-Comando de SSH: ssh -p 22138 -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa ccgc@forward.i3m.upv.es
+-Contraseña: yanolavamosacambiar

@@ -1,0 +1,5 @@
+-Comandos:
+  -Creamos el archivo "nombres.txt" con 10 nombres.
+  -Ejecutamos: sort nombres.txt
+  -El comando para ejecutarlo en la máquina remota es: globus-job-run josegqui.ccgc.mucnap.upv.es -stdin -s nombres.txt -stdout -s ordenados.txt /bin/sort
+    -Es "/bin/sort" y no "sort" porque el ejecutable "sort" no está dentro de las rutas de búsqueda del sistema en ese entorno remoto.

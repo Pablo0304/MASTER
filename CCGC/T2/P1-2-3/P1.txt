@@ -1,0 +1,5 @@
+-Comandos:
+  -Desactivar fireware: sudo /etc/init.d/iptables stop
+  -Lanzar servicio "globus-gatekeeper": sudo /etc/init.d/globus-gatekeeper start
+  -Creamos un Proxy: grid-proxy-init -cert clave_publica_cliente.pem -key clave_privada_cliente.pem
+  -Lanzar el trabajo (‘hostname’) a una maquina remota: globus-job-run josegqui.ccgc.mucnap.upv.es /bin/hostname

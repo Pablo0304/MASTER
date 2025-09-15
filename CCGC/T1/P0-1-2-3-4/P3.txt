@@ -1,0 +1,47 @@
+-Comandos Escenario I:
+  -Cliente:
+    -Para conseguir la clave de nuestro compañero (en este caso estoy solo y pillo el de la P2): scp /home/ccgc/Evidencias/Grid/01_Seguridad/P2/usercert.pem /home/ccgc/Evidencias/Grid/01_Seguridad/P3/pablo_usercert.pem
+      -Sino sería: scp /home/ccgc/Evidencias/Grid/01_Seguridad/P2/usercert.pem ccgc@<<nombre_maq_comp>>:/home/ccgc/Evidencias/Grid/01_Seguridad/P3/<<nombre_compa>>_usercert.pem
+    -Cifrar mensaje para Pablo: openssl smime -encrypt -in mensaje.txt -out mensaje_cifrado_por_cliente.txt clave_publica_pablo.pem
+    -Enviar el mensaje por un canal seguro (o con scp, en esta práctica).
+  -Pablo:
+    -Desciframos el mensaje del Cliente: openssl smime -decrypt -inkey clave_privada_pablo.pem -in mensaje_cifrado_por_cliente.txt -out mensaje_descifrado_por_pablo.txt
+  -Respuestas:
+    1.-Autenticacion del emisor: False.
+    2.-Autenticacion del receptor: True.
+    3.-Confidencialidad de los datos: True.
+    4.-Integridad de los datos: True.
+
+-Comandos Escenario II (se van a usar las mismas claves tanto para emisor como para receptor):
+  -Cliente:
+    -Firma con su clave privada el mensaje: openssl smime -sign -text -in mensaje.txt -out mensaje_firmado_por_cliente.txt -inkey clave_privada_cliente.pem -signer clave_publica_cliente.pem 
+      -Aunque se firma con la clave privada, la pública se añade como anexo para que se pueda descifrar.
+    -Enviar el mensaje por un canal seguro (o con scp, en esta práctica).
+  -Pablo:
+    -Verificación de firma: openssl smime -verify -in mensaje_firmado_por_cliente.txt -out mensaje_verificado_por_pablo.txt -CApath /etc/grid-security/certificates/
+      -En caso de ser una CA remota, se le añadiría "-CAfile cadena.pem" con el archivo suministrado por esta CA en vez del "-CApath ..." (fuente ChatGPT).
+      -Al no haberse eliminado la primera línea, sale "Content-Type: text/plain" (en el Escenario III sí se indica que se debe eliminar esta línea).
+  -Respuestas:
+    1.-Aut.del emisor: True.
+    2.-Aut. del receptor: False.
+    3.-Confidencialidad de los datos: False.
+    4.-Integridad de los datos: True.
+
+-Comandos Escenario III (se van a usar las mismas claves tanto para emisor como para receptor):
+  -Cliente:
+    -Cifrar mensaje con clave pública del receptor: openssl smime -encrypt -in mensaje.txt -out mensaje_cifrado_por_cliente.txt clave_publica_cliente.pem
+    -Firma con su clave privada el mensaje: openssl smime -sign -text -in mensaje_cifrado_por_cliente.txt -out mensaje_firmado_por_cliente.txt -inkey clave_privada_cliente.pem -signer clave_publica_cliente.pem
+    -Enviar el mensaje por un canal seguro (o con scp, en esta práctica).
+  -Pablo:
+    -Verificación de firma: openssl smime -verify -in mensaje_firmado_por_cliente.txt -out mensaje_verificado_por_pablo.txt -CApath /etc/grid-security/certificates/
+      -Al hacer cat, podemos ver que aparece la clave pública anexa y que la primera línea es "Content-Type: text/plain" (aquí sí hay que eliminar esa línea y la siguiente porque si no se hace no funciona el comando de desencriptar).
+      -Ejecutamos: sed -i '1,2d' mensaje_verificado_por_pablo.txt
+        -El error si no hacemos este paso es el siguiente:
+          Enter pass phrase for clave_privada_cliente.pem:
+          Error reading S/MIME message 139887515436872:error:0D0D40CD:asn1 encoding routines:SMIME_read_ASN1:invalid mime type:asn_mime.c:519:type: text/plain
+    -Desciframos el mensaje del Cliente: openssl smime -decrypt -inkey clave_privada_cliente.pem -in mensaje_cifrado_por_cliente.txt -out mensaje_descifrado_por_pablo.txt
+  -Respuestas:
+    1.-Aut.del emisor: True.
+    2.-Aut. del receptor: True.
+    3.-Confidencialidad de los datos: True.
+    4.-Integridad de los datos: True.
