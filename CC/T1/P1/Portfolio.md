@@ -1,0 +1,234 @@
+# Práctica 1:
+
+![alt text](images/p1.png)
+
+# Práctica 2:
+
+![alt text](images/p2.png)
+
+## Tarea 2.1:
+
+\<docker images\>
+
+![alt text](images/p2.1.png)
+
+## Tarea 2.2:
+
+\<docker pull ubuntu\>
+
+![alt text](images/p2.2.png)
+
+## Tarea 2.3:
+
+\<docker pull ubuntu:focal\>
+
+![alt text](images/p2.3.png)
+
+## Tarea 2.4:
+
+\<docker pull nginx\>
+
+![alt text](images/p2.4.png)
+
+## Tarea 2.5:
+
+\<docker rmi hello-world -f\>
+
+![alt text](images/p2.5.png)
+
+# Práctica 3:
+
+![alt text](images/p3.png)
+
+## Tarea 3.1:
+
+\<docker ps -a\>
+
+![alt text](images/p3.1.png)
+
+## Tarea 3.2:
+
+\<docker inspect suspicious_wozniak\>
+
+## Tarea 3.3:
+
+\<docker inspect --format '{{ .State }}' suspicious_wozniak\>
+
+![alt text](images/p3.3.png)
+
+## Tarea 3.4:
+
+\<docker inspect --format '{{ .Config.Entrypoint }}' ubuntu:focal\>
+
+\<docker inspect --format '{{ .Config.Cmd }}' ubuntu:focal\>
+
+![alt text](images/p3.4.png)
+
+## Tarea 3.5:
+
+\<docker run -d --name mi_con1 --entrypoint /bin/hostname ubuntu:focal\>
+
+![alt text](images/p3.5.png)
+
+## Tarea 3.6:
+
+\<docker run -d --name mi_con2 --entrypoint /bin/hostname ubuntu:focal josegqui.mucnap.cc.upv.es\>
+
+![alt text](images/p3.6.png)
+
+## Tarea 3.7:
+
+\<docker run -d --name mi_cont3 ubuntu:focal /bin/hostname\>
+
+![alt text](images/p3.7.png)
+
+## Tarea 3.8:
+
+\<docker run -d --name mi_con1_web nginx\>
+
+![alt text](images/p3.8.png)
+
+## Tarea 3.9:
+
+\<docker start mi_con1\>
+
+\<docker start -a mi_con1\>
+
+![alt text](images/p3.9.png)
+
+## Tarea 3.10:
+
+\<docker start mi_con1_web\>
+
+\<docker ps\>
+
+![alt text](images/p3.10.png)
+
+## Tarea 3.11:
+
+![alt text](images/p3.11.png)
+
+## Tarea 3.12:
+
+\<docker stop mi_con1_web\>
+
+![alt text](images/p3.12.png)
+
+## Tarea 3.13:
+
+\<docker create --name mi_con3 ubuntu:focal /bin/hostname\>
+
+\<docker start 4ae0f4f9f46ffbdd00cb70d719b142ae769e89f2d1e1050e4bae400b313a0095\>
+
+![alt text](images/p3.13.png)
+
+## Tarea 3.14:
+
+\<docker run --name mi_con3_run ubuntu:focal /bin/hostname\>
+
+![alt text](images/p3.14.png)
+
+## Tarea 3.15:
+
+\<docker run -d --name mi_con3_run2 ubuntu:focal /bin/hostname\>
+
+![alt text](images/p3.15.png)
+
+## Tarea 3.16 (no hay estado porque se ha borrado y ya no aparece):
+
+\<docker stop mi_con1_web\>
+
+\<docker rm mi_con1_web\>
+
+![alt text](images/p3.16.png)
+
+# Práctica 4:
+
+![alt text](images/p4.png)
+
+## Tarea 4.1:
+
+\<docker create --name mi_con2_web -p 8080:80 nginx\>
+
+\<docker ps -a\>
+
+![alt text](images/p4.1.png)
+
+## Tarea 4.2:
+
+\<docker start e2d63d6572f6\>
+
+\<docker ps\>
+
+![alt text](images/p4.2.png)
+
+## Tarea 4.3:
+
+Solo si se añade la configuración necesaria como "inbound rule" para puerto 8080 en la MV de Azure.
+![alt text](images/p4.3.png)
+
+## Tarea 4.4:
+
+No se puede porque ese nombre ya pertenece a un contenedor.
+
+![alt text](images/p4.4.png)
+
+## Tareas 4.5 y 4.6:
+
+Falla porque ya se ha usado ese puerto:  
+\<docker stop 762745bfdc01\>
+
+\<docker create --name mi_con3_web -p 8080:80 -p 8043:433 nginx\>
+
+\<docker start mi_con3_web\>
+
+\<docker ps -a\>
+
+![alt text](images/p4.5.1.png)
+![alt text](images/p4.5.2.png)
+
+## Tarea 4.7:
+
+\<docker create --name mi_con4_web --expose 80 --expose 433 -P nginx\>
+
+\<docker start be82d35de64862e290dffc1e18c02739ebcca62e7e8df9f808a0a9a7756d88c7\>
+
+\<docker ps -a\>
+
+![alt text](images/p4.7.png)
+
+## Tarea 4.8:
+
+Al no haber expuesto los puertos, no salen con estos comandos, por eso he puesto en la captura el otro contenedor.  
+Tampoco pasa nada porque no afecta al funcionamiento del contenedor y el "export" solo es para metadata del propio contenedor.
+\<docker inspect --format {{.NetworkSettings.Ports}} mi_con4_web\>
+
+\<docker port mi_con4_web\>
+
+![alt text](images/p4.8.png)
+
+# Práctica PA1:
+
+\<docker pull docker.io/gnuoctave/octave:9.2.0\>
+
+\<docker run --name solver_octave_basico gnuoctave/octave:9.2.0 octave --eval "disp(sqrt(25) + sin(pi/2));"\>
+
+![alt text](images/pa1.1.png)
+
+![alt text](images/pa1.2.png)
+
+# Práctica PA2:
+
+\<docker pull tomcat:9.0\>
+
+\<docker run -d --name servidor_web_tomcat -p 8000:8080 tomcat:9.0\>
+
+![alt text](images/pa2.1.png)
+
+![alt text](images/pa2.2.png)
+
+![alt text](images/pa2.3.png)
+
+# Evidencia final:
+
+![alt text](images/final.png)

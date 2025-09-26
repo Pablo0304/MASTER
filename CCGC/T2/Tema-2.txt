@@ -1,19 +1,62 @@
--¿Cómo hacemos que un Grid sea seguro?:
--Conceptos clave de Seguridad en el Grid:
-  -Pag. 11
-  -...
--Necesidades básicas para seguridad:
-  -Aut. Receptor.
-  -Aut. Emisor.
-  -Integridad datos.
-  -Confidencialidad de datos.
--Lo que haces cuando pides una clave:
-  1.-Generas tu Clave Privada y tu Clave Pública.
-  2.-Envías la CPub a la CA.
-  3.-El pibe del ayto. pilla la CPriv de la CA.
-  4.-...
-  Necesito preguntar al gpt porque es un lío y me están faltando pasos.
 
+1.-Seguridad en el Grid:
+-Tipos de usuarios: usuario confiado (nada cifrado y medios de identificación muy débiles), usuario paranóico (no comms.) y usuario realista.
+-Problemas de la Seguridad en el Grid:
+  -Autenticación y Autorización: quién es y sus permisos.
+  -Confidencialidad e integridad de datos: cifrado para dar seguridad en el transporte y confirmar integridad.
+  -Confiabilidad de los servicios: funciona de la manera prevista.
+  -Trazabilidad y no repudio: monitorización y que no pase el "no he sido yo" por parte del emisor y el "no lo he recibido" por parte del receptor.
+  -Delegación: cesión del derecho a actuar en nuestro nombre (TEMPORAL).
+  -Coordinar políticas de acceso a recursos locales: VOs.
+  -Facilitar acceso a recursos de forma general:
+    -La interfaz de acceso permitirá el acceso a los recursos a cualquier usuario de forma homogénea.
+    -Será el que ofrezca el middleware Grid que se utilice (p.e. Globus Toolkit 6, UMD).
 
-???
--En firma asimétrica, siempre se firma con la privada porque con la pública se puede saber si soy yo, en el caso de encriptación puede ser como quieras (preguntar para confirmar con GPT).
+2.-Implementación de la Seguridad en el Grid:
+-Introducción a la criptografía:
+  -Claves: simétrica (utiliza algoritmos DES y 3DES) y asimétrica o de clave pública (utiliza algoritmo RSA y DSA y es la que usaremos en Grid).
+-Certificados digitales y Autoridades de certificación:
+  -Certs. x509:
+    -Descripción: documentos electrónicos que asocian a un usuario o recurso con su clave pública, esto da un DN.
+    -Tipos:
+      -De usuarios: para una persona física (DN= C=E, O=UPV, OU=GRID, CN=Juan García).
+      -De máquinas Grid: para un equipo servidor en el Grid (DN= C=E, O=UPV, OU=GRID, CN=host/odin.dsic.upv.es).
+      -De Servicio: para un programa en una máquina en el Grid (DN= C=E, O=UPV, OU=GRID, CN=ldap/odin.dsic.upv.es).
+  -CAs: firma certificados.
+-Public Key Infrastructure (PKI):
+  -Proporciona:
+    -Autenticación.
+    -Integridad.
+    -Confidencialidad.
+    -No Repudio.
+  -Basado en cifrado asimétrico.
+  -¡NO ESCALA!
+-Globus Security Infrastructure (GSI):
+  -Basado en PKI.
+  -Implementa:
+    -Autenticación única (single sign-on).
+    -Delegación.
+    -Autenticación mútua.
+    -Autorización de acceso a recursos.
+  -Proxy:
+    -Credenciales temporales.
+    -Incluyen CPriv y se firman con el cert. de usuario.
+    -Permite las comms. seguras porque evitan que la clave privada viaje.
+    -Tipos: completo (creado a partir de un cert. o de otro proxy completo) y limitado (creado a partir de un proxy mediante delegación limitada o por otro proxy limitado).
+  -Autorización Grid:
+    -Conceptos:
+      -VOs: permisos.
+      -RP (proveedor de recursos): CPUs, almacenamiento.
+    -Riesgos:
+      -Suplantación de identidad.
+      -Robo de CPriv.
+      -Robo de la CPriv de la CA => ¡CAGADÓN!
+    -Responsabilidad del usuario:
+      -Guardar bien la CPriv.
+      -No prestar cert.
+      -Informar si se compromete el certificado.
+      -No lanzar un servicio de delegación por más tiempo que el necesario.
+    -Pasos:
+      -Solicitar cert.: autenticación.
+      -Solicitar pertenencia a VO: autorización.
+      -Solicitar recurso.

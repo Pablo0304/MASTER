@@ -1,9 +1,52 @@
--Conceptos claves de un Grid:
--Descripción de componentes:
--
+1.-Conceptos de Grid:
+-Término Grid: Metodología de Acceso a Recursos DISTRIBUIDOS Orientada a la "Computación Bajo Demanda".
+-Concepto de Grid: "Coordina Recursos que NO son sujetos a control centralizado utilizando protocolos e interfaces estándar, abiertos y de propósito general, para proporcionar una calidad de servicio No Trivial".
+-Capaz de:
+  -Realizar tareas complejas y de alto coste computacional.
+  -Proporcionar una estructura para el registro y almacenamiento de datos.
+  -Utilizar de forma efectiva recursos que permanecían inactivos LA MAYOR PARTE DEL TIEMPO.
 
+2.-Requisitos y Funcionalidad de los Grids:
+-Grid proporciona un paso más en la integración de recursos heterogéneos vs sistemas distribuidos.
+  -A nivel de usuarios: integran VOs que comparten permisos.
+  -A nivel de datos: el almacenamiento distribuido se organiza a través de catálogos.
+  -A nivel de proceso: visión de computador único.
+-Un Grid proporciona:
+  -Relanzamiento ante fallos.
+  -Monitorización.
+  -Manejo de datos replicados.
+-Objetivos:
+  -Equilibrio de carga.
+  -Reducción de tiempo de respuesta.
+  -Eficiencia.
+  -Fiabilidad.
+-Compartir recursos en un Grid permite aprovechar los recursos no utilizados disponibles.
+-Muchos recursos se encuentran por debajo del 5% de utilización.
+-Los recursos son tanto tiempo de proceso como espacio de almacenamiento.
+-Aún así, no todos los procesos son paralelizables o eficientes en Grid:
+  -Adecuados para HTC (High Throughput Computing, ):
+    -Problemas multiparamétricos.
+    -Programas paralelos de grano grueso y escalables.
+  -NO adecuados para HPC (High Performance Computing, más rendimiento y menor tiempo):
+    -Programas de grano fino.
+    -Coste alto en comunicaciones.
+    -Requerimientos en tiempo real.
+  ¡HPC no es para Grids!
 
+3.-Descripción de los Elementos Básicos:
+-VOs: permisos.
+-Recursos.
+-Servicios: seguridad, gestión de datos y trabajo, monitorización,...
+-Jobs: multiparamétricos y paralelos.
 
-???
+4.-Infraestructuras Grid destacadas:
+-EGI.
+-WLCG (CERN).
+
+5.-Middlewares Grid:
+-Globus Toolkit.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+DATOS EXTRA:
 -"Si queremos montar un Grid necesitamos VO, procesos, servicios y jobs(trabajos)".
--Globus Toolkit va a ser lo que usemos en prácticas.

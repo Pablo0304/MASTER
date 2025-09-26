@@ -1,0 +1,40 @@
+-Tipos de trabajo en un Grid:
+  -Batch.
+  -Paralelos.
+  -Interactivos.
+-Para entrar en el grid hace falta (en este orden):
+  -Generar un proxy.
+  -Autenticar.
+  -Autorizar (/etc/grid_security/certificate y /etc/grid_security/grid_mapfile).
+  -Tiene que estar funcionando el GRAM dentro del sistema.
+-globus_job_run vs globus_job_submit: uno se hace en segundo plano.
+-globus_get_output: para recuperar el output de un comando.
+-"-stage" es importante para pillar los archivos.
+-Grid Resource Allocation Manager (GRAM):
+  -Módulo en globus toolkit para ejecución remota de trabajos y la gestión de su estado.
+  -Componentes:
+    -Gatekeeper: oculta peculiaridades del sistema y autoriza al usuario.
+    -Job manager.
+    -Proceso del trabajo.
+  -Estados del trabajo:
+    -Unsubmitted.
+    -StageIn: El job manager Está Enviando el Ejecutable y/o los Ficheros de Entrada.
+    -Pending: trabajo sometido pero no hay recursos disponibles.
+    -Active.
+    -Suspended.
+    -StageOut: El job manager se Encuentra Copiando los Ficheros de Salida desde el Host Remoto.
+    -Done.
+    -Failed.
+-Resorce Specification Language (RSL):
+  -Permite Definir en un Archivo de Texto los Requerimientos y Atributos de un Trabajo.
+  -Atributos:
+    -arguments (con comillas si hay espacios).
+    -count: número de ejecuciones (1 por defecto).
+    -stderr.
+    -stdin.
+    -stdout.
+    -job_type, max_cpu_time, max_memory, rsl_substitution,...
+
+???
+-Para autorizar a un usuario en un recurso para ejecutar cosas dentro de él, debemos registrar el DN en el grid_mapfile.yaml ??? no sé si esto es verdad
+-GASS es para ficheros pequeños y el GridFTP para ficheros grandes.

@@ -1,0 +1,110 @@
+PRÁCTICA 1:
+-Comandos ejercicio 1:
+  -Creamos proxy: grid-proxy-init -cert clave_publica_pablo.pem -key clave_privada_pablo.pem
+  -Activamos GASS en la máquina local (mantener corriendo en otro terminal): globus-gass-server –r –w –t
+  -Creamos un archivo (ejercicio1.rs) con el contenido del final de esta sección.
+  -Ejecutar: globusrun -r <MAQUINA_COMPANERO>.ccgc.mucnap.upv.es -f ejercicio1.rsl
+
+-Comandos ejercicio 2:
+  -Lo mismo que el 1 pero el comando para el GASS es con el flag "-i": a veces no va pero hay que lanzar hasta que salga "http://..." ya que este flag es para comms. no seguras.
+  -Info importante:
+    -La persona 1 pone el GASS de la persona 3 en el archivo y GASS de la persona 2 en el comando.
+    -Todos deben tener el GASS activado.
+    -¡CON HTTP! => solo cuando somos más de 2 personas.
+
+Archivo "ejercicio1.rsl":
+&
+(count = 1)
+(executable = /bin/cat)
+(rsl_substitution = (GASS_URL https://pgoncab.ccgc.mucnap.upv.es:47037))
+(stdin = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P1/miStdIn)
+(stdout = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P1/miStdOut)
+(stderr = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P1/miStdErr)
+
+Archivo "ejercicio2.rsl":
+&
+(count = 1)
+(executable = /bin/cat)
+(rsl_substitution = (GASS_URL http://dsmalcu.ccgc.mucnap.upv.es:40659))
+(stdin = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P1/ejercicio2/miStdIn)
+(stdout = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P1/ejercicio2/miStdOut)
+(stderr = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P1/ejercicio2/miStdErr)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+PRÁCTICA 2:
+-Ejercicio 1:
+  -Mismos comandos que la P1 para proxy y para el GASS.
+  -Esta vez será añadir nuestro GASS en el archivo y ejecutaremos en la máquina del compañero, nuestra máquina tendrá el resultado de la ejecución.
+  -¡CUIDADO CON EL file_stage_in y el file_stage_out! => hay mapeo al principio/final de la ruta dependiendo del comando, la dirección es la misma que en el comando "cp"
+-Ejercicio 2:
+  -Igual que en el Ejercicio 1.
+
+Archivo "ejercicio1.rsl":
+&
+(count = 1)
+(executable = /bin/sort)
+(arguments = Entrada1.txt Entrada2.txt -o Salida.txt )
+(rsl_substitution = (GASS_URL https://pgoncab.ccgc.mucnap.upv.es:39590))
+(stdout = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P2/miStdOut)
+(stderr = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P2/miStdErr)
+(file_stage_in = ($(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P2/Entrada1.txt Entrada1.txt)
+($(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P2/Entrada2.txt Entrada2.txt))
+(file_stage_out = (Salida.txt $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P2/Salida.txt))
+
+Archivo "ejercicio2.rsl":
+&
+(count = 1)
+(executable = /bin/sort)
+(arguments = Entrada1.txt Entrada2.txt -o Salida.txt )
+(rsl_substitution = (GASS_URL http://gadogare.ccgc.mucnap.upv.es:42802))
+(stdout = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P2/ejercicio2/miStdOut)
+(stderr = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P2/ejercicio2/miStdErr)
+(file_stage_in = ($(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P2/ejercicio2/Entrada1.txt Entrada1.txt)
+($(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P2/ejercicio2/Entrada2.txt Entrada2.txt))
+(file_stage_out = (Salida.txt $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P2/ejercicio2/Salida.txt))
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+PRÁCTICA 3:
+-Comandos:
+  -Se crea el archivo igual que el cpi.c que hay en este directorio.
+  -Se crea un archivo para ejecutar (Compila_y_ejecuta.sh).
+  -Se crea un archivo RSL (ejercicio.rsl).
+  -Se lanza globus: globusrun -r gadogare.ccgc.mucnap.upv.es -f ejercicio.rsl
+    -En miStdOut tenemos el resultado: pi es aprox. 3.1415927369231227 (1000 intervalos), Error es 0.0000000833333296
+
+Archivo Compila_y_ejecuta.sh:
+#!/bin/bash
+gcc cpi.c -o cpi && chmod +x cpi && ./cpi 1000
+
+Archivo ejercicio.rsl:
+&
+(count = 1)
+(executable = /bin/bash)
+(arguments = Compila_y_ejecuta.sh cpi.c)
+(rsl_substitution = (GASS_URL https://pgoncab.ccgc.mucnap.upv.es:55685))
+(file_stage_in = ($(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P3/Compila_y_ejecuta.sh Compila_y_ejecuta.sh) ($(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P3/cpi.c cpi.c))
+(stdout = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P3/miStdOut)
+(stderr = $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P3/miStdErr)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+PRÁCTICA 4:
+-Una vez tengamos los archivos del paso uno, crearemos el proxy de nuevo (como en todas las prácticas).
+-Activamos el servicio "globus-gridftp-server": sudo /etc/init.d/globus-gridftp-server start
+-Ejecutamos:
+  -globus-url-copy file:///home/ccgc/Evidencias/Grid/03_Manejo_Datos/P4/Entrada1_pablo.txt gsiftp://dsmalcu.ccgc.mucnap.upv.es/tmp/Entrada1_pablo.txt
+  -globus-url-copy file:///home/ccgc/Evidencias/Grid/03_Manejo_Datos/P4/Entrada2_pablo.txt gsiftp://dsmalcu.ccgc.mucnap.upv.es/tmp/Entrada2_pablo.txt
+-Generamos un archivo (ejercicio.rsl).
+
+-Archivo ejercicio.rsl:
+&
+(count = 1)
+(executable = /bin/sort)
+(arguments = /tmp/Entrada1_pablo.txt /tmp/Entrada2_pablo.txt -o Salida_pablo.txt )
+(rsl_substitution = (GASS_URL https://pgoncab.ccgc.mucnap.upv.es:55685))
+(file_stage_out = (Salida_pablo.txt $(GASS_URL)/home/ccgc/Evidencias/Grid/03_Manejo_Datos/P4/Salida_pablo.txt))
