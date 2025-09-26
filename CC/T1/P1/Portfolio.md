@@ -229,6 +229,71 @@ Tampoco pasa nada porque no afecta al funcionamiento del contenedor y el "export
 
 ![alt text](images/pa2.3.png)
 
-# Evidencia final:
+# Práctica P5:
 
-![alt text](images/final.png)
+![alt text](images/p5.png)
+
+## Tarea 5.1:
+
+\<docker create --name mi_con1_int -it ubuntu:focal "/bin/hostname"\>
+
+\<docker start -a mi_con1_int\>
+
+![alt text](images/p5.1.png)
+
+## Tarea 5.2:
+
+\<docker create --name mi_con2_int -t ubuntu:focal /bin/bash\>
+
+\<docker start -a mi_con2_int\>
+
+![alt text](images/p5.2.png)
+
+## Tarea 5.3:
+
+\<docker create --name mi_con3_int -it ubuntu:focal /bin/bash\>
+
+\<docker start -a mi_con3_int\>
+
+![alt text](images/p5.3.png)
+
+## Tarea 5.4:
+
+\<docker create --name mi_con4_int -it ubuntu:focal /bin/bash\>
+
+\<docker start mi_con4_int\>
+
+\<docker attach ac5df23c753b39289fb19c4c7b86887499d461c09e934102bceada6a1f5d2d6f\>
+
+![alt text](images/p5.4.png)
+
+## Tarea 5.5:
+
+\<docker create --name mi_con5_int ubuntu:focal /bin/bash\>
+
+\<docker start mi_con5_int\>
+
+\<docker exec mi_con5_int /bin/ls\>
+
+![alt text](images/p5.5.png)
+
+## Tarea 5.6:
+
+\<docker create --name mi_con6_int -i ubuntu:focal /bin/bash\>
+
+\<docker start mi_con6_int\>
+
+\<docker exec mi_con6_int /bin/ls\>
+
+\<docker exec mi_con6_int /bin/ps\>
+
+\<docker exec mi_con6_int /bin/pwd\>
+
+![alt text](images/p5.6.png)
+
+## Tarea 5.7:
+
+\<docker create --name mi_con7_int -i ubuntu:focal /bin/bash\>
+\<docker start mi_con7_int\>
+\<docker exec -it mi_con7_int /bin/bash\>
+![alt text](images/p5.7.png)
