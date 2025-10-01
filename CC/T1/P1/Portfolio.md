@@ -294,6 +294,123 @@ Tampoco pasa nada porque no afecta al funcionamiento del contenedor y el "export
 ## Tarea 5.7:
 
 \<docker create --name mi_con7_int -i ubuntu:focal /bin/bash\>
+
 \<docker start mi_con7_int\>
+
 \<docker exec -it mi_con7_int /bin/bash\>
+
 ![alt text](images/p5.7.png)
+
+# Práctica P6:
+
+![alt text](images/p6.png)
+
+## Tarea 6.1:
+
+\<docker run -d --name mi_con1_vol -i ubuntu:focal /bin/bash\>
+
+\<docker exec mi_con1_vol /bin/touch /tmp/miﬁchero.txt\>
+
+\<docker exec mi_con1_vol /bin/ls /tmp\>
+
+\<docker restart mi_con1_vol\>
+
+\<docker exec mi_con1_vol /bin/ls /tmp\>
+
+![alt text](images/p6.1.png)
+
+## Tarea 6.2:
+
+\<docker rm -f mi_con1_vol\>
+
+\<docker run -d --name mi_con1_vol -i ubuntu:focal /bin/bash\>
+
+\<docker exec mi_con1_vol /bin/ls /tmp\>
+
+![alt text](images/p6.2.png)
+
+## Tarea 6.3:
+
+\<docker volume create mi_vol_persistente\>
+
+\<docker volume ls\>
+
+![alt text](images/p6.3.png)
+
+## Tarea 6.4 (no hay foto de los primeros comandos porque me salen muchos logs sin sentido debido a un fallo en la MV):
+
+\<docker run -d --name mi_con2_vol -i -v mi_vol_persistente:/persiste ubuntu:focal /bin/bash\>
+
+\<docker exec mi_con2_vol /bin/touch /persiste/miﬁchero.txt\>
+
+\<docker exec mi_con2_vol /bin/ls /tmp\>
+
+\<docker stop mi_con2_vol\>
+
+\<docker rm -f mi_con2_vol\>
+
+\<docker run -d --name mi_con2_vol -i -v mi_vol_persistente:/persiste ubuntu:focal /bin/bash\>
+
+\<docker exec mi_con2_vol /bin/ls /persiste\>
+
+![alt text](images/p6.4.png)
+
+## Tarea 6.5:
+
+\<docker run -d --name mi_con3_vol -v $HOME:/mnt -it ubuntu:focal /bin/bash\>
+
+\<docker exec mi_con3_vol cat /mnt/mi_nombre.txt\>
+
+![alt text](images/p6.5.png)
+
+## Tarea 6.6:
+
+\<echo "Pablo" > $HOME/mi_nombre.txt\>
+
+\<docker exec mi_con3_vol cat /mnt/mi_nombre.txt\>
+
+![alt text](images/p6.6.png)
+
+## Tarea 6.7:
+
+\<docker attach mi_con3_vol\>
+
+\<echo -e "Pablo\nPablo" > /mnt/mi_nombre.txt\>
+
+\<docker exec mi_con3_vol cat /mnt/mi_nombre.txt\>
+
+![alt text](images/p6.7.png)
+
+## Tarea 6.8:
+
+\<docker run -d --name mi_con4_vol -it -v /persiste ubuntu:focal /bin/bash\>
+
+\<docker exec mi_con4_vol touch /persiste/fichero.txt\>
+
+\<docker exec mi_con4_vol /bin/ls /persiste\>
+
+\<docker volume ls\>
+
+![alt text](images/p6.8.png)
+
+## Tarea 6.9:
+
+\<echo "Este es el contenido de mi_fichero1.txt" > $HOME/mi_fichero1.txt\>
+
+\<docker start mi_con3_vol\>
+
+\<docker cp $HOME/mi_fichero1.txt mi_con3_vol:/tmp/\>
+
+\<docker exec mi_con3_vol cat /tmp/mi_fichero1.txt\>
+
+![alt text](images/p6.9.png)
+
+## Tarea 6.10:
+
+\<docker exec mi_con3_vol touch /tmp/mi_fichero3.txt\>
+
+\<docker cp mi_con3_vol:/tmp/mi_fichero3.txt $HOME/\>
+
+\<ls $HOME/mi_fichero3.txt\>
+
+![alt text](images/p6.10.png)
