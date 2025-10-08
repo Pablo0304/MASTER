@@ -530,3 +530,7 @@ Entiendo que realizar una compilación Docker posterior con el mismo nombre y et
 ![alt text](images/pa4.3.png)
 
 ![alt text](images/pa4.4.png)
+
+# Práctica P8:
+
+## Tarea 8.1:
