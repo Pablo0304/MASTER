@@ -533,4 +533,75 @@ Entiendo que realizar una compilación Docker posterior con el mismo nombre y et
 
 # Práctica P8:
 
+![alt text](images/p8.png)
+
 ## Tarea 8.1:
+
+\<vim Dockerfile\>
+
+\<cat Dockerfile\>
+
+\<docker build -t mi_contenedor:t8.1 .\>
+
+\<docker run -it --name mi_con1_build mi_contenedor:t8.1\>
+
+\<python --version\>
+
+![alt text](images/p8.1.png)
+
+## Tarea 8.2:
+
+\<vim distancia.py\>
+
+\<cat distancia.py\>
+
+\<vim Dockerfile\>
+
+\<cat Dockerfile\>
+
+\<docker build -t mi_contenedor:t8.2 .\>
+
+\<docker run -it --name mi_con2_build mi_contenedor:t8.2\>
+
+\<python distancia.py 0 2 3 4\>
+
+![alt text](images/p8.2.png)
+
+## Tarea 8.3:
+
+\<vim Dockerfile\>
+
+\<cat Dockerfile\>
+
+\<docker build -t mi_contenedor:t8.3 .\>
+
+\<docker run -d --name mi_con3_build -p 8080:80 mi_contenedor:t8.3\>
+
+![alt text](images/p8.3.1.png)
+
+Después, acceder al navegador en el puerto 8080:
+
+![alt text](images/p8.3.2.png)
+
+# Práctica P9:
+
+![alt text](images/p9.png)
+
+## Tarea 9.1:
+
+\<docker login -u pablo0304\>
+
+![alt text](images/p9.1.png)
+
+## Tarea 9.2:
+
+\<docker tag mi_contenedor:t8.3 pablo0304/mi_contenedor:t8.3\>
+
+![alt text](images/p9.2.png)
+
+## Tarea 9.3:
+
+\<docker push pablo0304/mi_contenedor:t8.3\>
+
+![alt text](images/p9.3.1.png)
+![alt text](images/p9.3.2.png)
