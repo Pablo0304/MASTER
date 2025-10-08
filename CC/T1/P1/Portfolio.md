@@ -437,6 +437,12 @@ Tampoco pasa nada porque no afecta al funcionamiento del contenedor y el "export
 
 # Práctica PA3:
 
+Aunque el comando Docker build también se usó para generar la imagen final, este paso no es estrictamente necesario.
+
+Con Docker commit, todo el estado del contenedor (incluyendo dependencias y archivos) ya está guardado, por lo que la imagen resultante está lista para ser reutilizada directamente. Sin embargo, el comando de build se ha incluido como una forma más automatizada y reproducible de generar la imagen, de acuerdo con las mejores prácticas de Docker.
+
+Entiendo que realizar una compilación Docker posterior con el mismo nombre y etiqueta no elimina la imagen creada previamente con Docker commit, sino que genera una nueva imagen con un identificador diferente y reasigna la etiqueta para que apunte a ella. Como resultado, la imagen original permanece sin etiquetar (dangling) y puede eliminarse posteriormente mediante una limpieza manual o automática.
+
 \<docker run -d --name solver_suma_vec -it ubuntu:focal\>
 
 \<docker attach solver_suma_vec\>
@@ -472,6 +478,12 @@ Tampoco pasa nada porque no afecta al funcionamiento del contenedor y el "export
 ![alt text](images/pa3.5.png)
 
 # Práctica PA4:
+
+Aunque el comando Docker build también se usó para generar la imagen final, este paso no es estrictamente necesario.
+
+Con Docker commit, todo el estado del contenedor (incluyendo dependencias y archivos) ya está guardado, por lo que la imagen resultante está lista para ser reutilizada directamente. Sin embargo, el comando de build se ha incluido como una forma más automatizada y reproducible de generar la imagen, de acuerdo con las mejores prácticas de Docker.
+
+Entiendo que realizar una compilación Docker posterior con el mismo nombre y etiqueta no elimina la imagen creada previamente con Docker commit, sino que genera una nueva imagen con un identificador diferente y reasigna la etiqueta para que apunte a ella. Como resultado, la imagen original permanece sin etiquetar (dangling) y puede eliminarse posteriormente mediante una limpieza manual o automática.
 
 \<vim procesa.m\>
 
