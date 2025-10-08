@@ -5,7 +5,7 @@
 -Para entrar en el grid hace falta (en este orden):
   -Generar un proxy.
   -Autenticar.
-  -Autorizar (/etc/grid_security/certificate y /etc/grid_security/grid_mapfile).
+  -Autorizar (/etc/grid_security/certificate para los certs y /etc/grid_security/grid_mapfile para los DN).
   -Tiene que estar funcionando el GRAM dentro del sistema.
 -globus_job_run vs globus_job_submit: uno se hace en segundo plano.
 -globus_get_output: para recuperar el output de un comando.
@@ -14,11 +14,11 @@
   -Módulo en globus toolkit para ejecución remota de trabajos y la gestión de su estado.
   -Componentes:
     -Gatekeeper: oculta peculiaridades del sistema y autoriza al usuario.
-    -Job manager.
-    -Proceso del trabajo.
+    -Job manager: Proceso Asociado a un Trabajo que Monitoriza su Estado y que se Destruye a Su Finalización.
+    -Proceso del trabajo: Proceso Efectivo del Usuario.
   -Estados del trabajo:
     -Unsubmitted.
-    -StageIn: El job manager Está Enviando el Ejecutable y/o los Ficheros de Entrada.
+    -StageIn: el job manager Está Enviando el Ejecutable y/o los Ficheros de Entrada.
     -Pending: trabajo sometido pero no hay recursos disponibles.
     -Active.
     -Suspended.
@@ -35,6 +35,8 @@
     -stdout.
     -job_type, max_cpu_time, max_memory, rsl_substitution,...
 
-???
--Para autorizar a un usuario en un recurso para ejecutar cosas dentro de él, debemos registrar el DN en el grid_mapfile.yaml ??? no sé si esto es verdad
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+DATOS EXTRA:
+-Para autorizar a un usuario en un recurso para ejecutar cosas dentro de él, debemos registrar el DN en el grid_mapfile.yaml.
 -GASS es para ficheros pequeños y el GridFTP para ficheros grandes.

@@ -414,3 +414,107 @@ Tampoco pasa nada porque no afecta al funcionamiento del contenedor y el "export
 \<ls $HOME/mi_fichero3.txt\>
 
 ![alt text](images/p6.10.png)
+
+# Práctica P7:
+
+![alt text](images/p7.png)
+
+## Tarea 7.1 (hay mucho log y por eso la captura es sin lanzar "apt-get ..."):
+
+\<docker start mi_con3_int\>
+
+\<docker attach mi_con3_int\>
+
+\<apt-get update && apt-get install python\>
+
+\<docker commit mi_con3_int ubuntu:python\>
+
+\<docker images\>
+
+![alt text](images/p7.1.1.png)
+
+![alt text](images/p7.1.2.png)
+
+# Práctica PA3:
+
+\<docker run -d --name solver_suma_vec -it ubuntu:focal\>
+
+\<docker attach solver_suma_vec\>
+
+\<apt-get update && apt-get install python && apt-get install python-numpy\>
+
+\<vim suma_vectores.py\> (se ha añadido una línea al principio para que detecte la tilde)
+
+\<cat suma_vectores.py\>
+
+\<docker cp $HOME/suma_vectores.py solver_suma_vec:/home\>
+
+\<vim Dockerfile\>
+
+\<cat Dockerfile\>
+
+\<docker commit solver_suma_vec mi_img_suma_vectores:latest\>
+
+\<docker build -t mi_img_suma_vectores:latest .\>
+
+\<docker run -d --name solver_suma_vec2 -it mi_img_suma_vectores:latest\>
+
+\<docker exec solver_suma_vec2 python suma_vectores.py "1,2,3" "4,5,6"\>
+
+![alt text](images/pa3.1.png)
+
+![alt text](images/pa3.2.png)
+
+![alt text](images/pa3.3.png)
+
+![alt text](images/pa3.4.png)
+
+![alt text](images/pa3.5.png)
+
+# Práctica PA4:
+
+\<vim procesa.m\>
+
+\<cat procesa.m\>
+
+\<vim A\>
+
+\<cat A\>
+
+\<vim B\>
+
+\<cat B\>
+
+\<docker run -d -it --name contenedor_octave ubuntu:focal\>
+
+\<docker attach contenedor_octave\>
+
+\<apt-get update && apt-get install -y octave\>
+
+\<mkdir octave\> (no aparece en la captura pero es necesario)
+
+\<docker cp $HOME/procesa.m contenedor_octave:/octave/procesa.m\>
+
+\<docker cp $HOME/A contenedor_octave:/octave/A\>
+
+\<docker cp $HOME/B contenedor_octave:/octave/B\>
+
+\<vim Dockerfile\>
+
+\<cat Dockerfile\>
+
+\<docker commit contenedor_octave mi_img_octave:latest\>
+
+\<docker build -t mi_img_octave:latest .\>
+
+\<docker run -d --name contenedor_octave2 -it mi_img_octave:latest\>
+
+\<docker exec contenedor_octave2 octave /octave/procesa.m\>
+
+![alt text](images/pa4.1.png)
+
+![alt text](images/pa4.2.png)
+
+![alt text](images/pa4.3.png)
+
+![alt text](images/pa4.4.png)

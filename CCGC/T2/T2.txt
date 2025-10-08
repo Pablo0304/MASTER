@@ -1,4 +1,3 @@
-
 1.-Seguridad en el Grid:
 -Tipos de usuarios: usuario confiado (nada cifrado y medios de identificación muy débiles), usuario paranóico (no comms.) y usuario realista.
 -Problemas de la Seguridad en el Grid:
@@ -17,7 +16,7 @@
   -Claves: simétrica (utiliza algoritmos DES y 3DES) y asimétrica o de clave pública (utiliza algoritmo RSA y DSA y es la que usaremos en Grid).
 -Certificados digitales y Autoridades de certificación:
   -Certs. x509:
-    -Descripción: documentos electrónicos que asocian a un usuario o recurso con su clave pública, esto da un DN.
+    -Descripción: documentos electrónicos que asocian a un usuario o recurso con su clave pública, esto da un Distinguished Name (DN).
     -Tipos:
       -De usuarios: para una persona física (DN= C=E, O=UPV, OU=GRID, CN=Juan García).
       -De máquinas Grid: para un equipo servidor en el Grid (DN= C=E, O=UPV, OU=GRID, CN=host/odin.dsic.upv.es).

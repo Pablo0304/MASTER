@@ -1,0 +1,37 @@
+-Arquitecturas de representación:
+  -Representación Jerárquica:
+    -Estructura en Árbol (Cada Hijo Tiene Sólo un padre).
+    -Escalable a una Identificación Única Global (p.e. Basada en el DNS).
+    -Modelado Natural de Datos Físicos (p.e. países, Instituciones, Recursos,...)
+    -Acceso a Datos Rápido y Eficiente.
+  -Representación Relacional
+    -Modelo de Datos Más Rico Con Relaciones Más Complejas.
+    -Soporte de Búsquedas Complejas y Eficientes (SQL), Información Agregada, etc.
+    -Diseñado Para Actualizaciones Frecuentes y Soporte de Transacciones.
+    -No Maneja Tipos de Datos Complejos.
+-Monitoring and Discovery Service (MDS):
+  -Sistema de Información Para los Recursos en un Grid Desarrollado para Globus.
+  -Arq. Jerárquica.
+  -Tareas:
+    -Obtener la Información Actualizada de cada Recurso.
+    -Integrar esa Información en una Base de Datos General.
+    -Permitir el Acceso Remoto a Esta Información.
+    -Estructurar la Información Disponible.
+  -Se implementa a través de servicios LDAP (protocolo que se utiliza para acceder y administrar información de un directorio centralizado).
+  -Elementos:
+    -Proveedores de Información (Information Providers ó IP).
+      -Se Ejecutan en Cada Recurso y Obtienen la Información del Estado del Mismo.
+      -Pueden Proporcionar la Información Atendiendo al MDS core schema.
+      -Tipos:
+        -Core IPs: proporcionan info. básica del sistema.
+        -Custom IPs: proporcionan la info. que el usuario quiere proporcionar.
+    -Grid Resource Information Service (GRIS):
+      -Registra la Información Obtenida por los Diferentes IP para su Consulta.
+      -Un IP puede estar en varios GRIS.
+    -Grid Index Information Service (GIIS):
+      -Agrega la Información Publicada por Diferentes Servicios GRIS.
+      -Un GRIS puede estar en varios GIIS.
+    => Resumen:
+      Usuario => GIIS => GRIS => IP
+              =>     GRIS     => IP
+  -Grid Laboratory Uniform Environment (GLUE): Describe la Información de los Recursos del Grid.

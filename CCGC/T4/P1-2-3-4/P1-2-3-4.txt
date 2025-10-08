@@ -7,7 +7,7 @@ PRÁCTICA 1:
 
 -Comandos ejercicio 2:
   -Lo mismo que el 1 pero el comando para el GASS es con el flag "-i": a veces no va pero hay que lanzar hasta que salga "http://..." ya que este flag es para comms. no seguras.
-  -Info importante:
+  -INFO IMPORTANTE:
     -La persona 1 pone el GASS de la persona 3 en el archivo y GASS de la persona 2 en el comando.
     -Todos deben tener el GASS activado.
     -¡CON HTTP! => solo cuando somos más de 2 personas.
