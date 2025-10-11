@@ -605,3 +605,95 @@ Después, acceder al navegador en el puerto 8080:
 
 ![alt text](images/p9.3.1.png)
 ![alt text](images/p9.3.2.png)
+
+# Práctica P10:
+
+![alt text](images/p10.png)
+
+## Tarea 10.1 y 10.2 (hace falta tener contenedores en ejecución):
+
+\<docker network ls\>
+
+\<docker inspect 0e9e3f61d41d\>
+
+![alt text](images/p10.1-2.png)
+
+## Tarea 10.3:
+
+\<docker run -dit --name mi_con1_red --network bridge ubuntu:focal /bin/bash\>
+
+\<docker run -dit --name mi_con1_red_web --network bridge nginx\>
+
+\<docker inspect bridge\>
+
+\<docker attach mi_con1_red\>
+
+\<apt-get-update && apt-get install curl\>
+
+\<curl http://mi_con1_red_web\> (La red bridge por defecto no resuelve los nombres de los contenedores. La comunicación solo se puede realizar por IPs privadas.)
+
+\<curl http://172.17.0.2\>
+
+![alt text](images/p10.3.1.png)
+![alt text](images/p10.3.2.png)
+![alt text](images/p10.3.3.png)
+![alt text](images/p10.3.4.png)
+![alt text](images/p10.3.5.png)
+
+## Tarea 10.4:
+
+\<docker network create --driver bridge --subnet 192.168.0.0/24 --gateway 192.168.0.10 mi_red_bridge\>
+
+![alt text](images/p10.4.png)
+
+## Tarea 10.5:
+
+\<docker run -dit --name mi_con2_red --network mi_red_bridge ubuntu:focal /bin/bash\>
+
+\<docker run -dit --name mi_con2_red_web --network mi_red_bridge nginx\>
+
+\<docker inspect mi_red_bridge\>
+
+\<docker attach mi_con2_red\>
+
+\<apt-get-update && apt-get install curl\>
+
+\<curl http://mi_con2_red_web\> (Ahora el curl si que resuelve por nombre los contenedores. En la red bridge por feceto no lo hace.)
+
+\<curl http://192.168.0.2\>
+
+![alt text](images/p10.5.1.png)
+![alt text](images/p10.5.2.png)
+![alt text](images/p10.5.3.png)
+![alt text](images/p10.5.4.png)
+![alt text](images/p10.5.5.png)
+
+## Tarea 10.6:
+
+\<docker network connect mi_red_bridge mi_con1_red\>
+
+\<docker inspect mi_red_bridge\>
+
+![alt text](images/p10.6.1.png)
+![alt text](images/p10.6.2.png)
+
+## Tarea 10.7:
+
+\<docker run -dit --name mi_con3_red_web nginx\>
+
+\<docker network connect host mi_con3_red_web\> (no funciona porque la red host es especial y solo se puede conectar en la definición del contenedor)
+
+\<docker stop mi_con3_red_web && docker rm mi_con3_red_web\>
+
+\<docker network ls\>
+
+\<docker run -dit --name mi_con3_red_web --network host nginx\>
+
+\<ip a\>
+
+\<curl http://172.17.0.1\>
+
+![alt text](images/p10.7.1.png)
+![alt text](images/p10.7.2.png)
+![alt text](images/p10.7.3.png)
+![alt text](images/p10.7.4.png)
