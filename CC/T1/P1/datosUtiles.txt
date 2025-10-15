@@ -1,0 +1,51 @@
+* docker rmi hello-world -f
+  - Elimina la imagen "hello-world" de forma forzada.
+  - La opción `-f` (o `--force`) se usa para forzar la eliminación incluso si la imagen está en uso por contenedores.
+
+* docker inspect --format '{{ .State }}' suspicious_wozniak
+  - Muestra información detallada del contenedor.
+  - `inspect` devuelve los detalles en formato JSON.
+  - `--format` permite extraer solo una parte, usando plantillas Go. En este caso, muestra solo el estado (`State`).
+
+* docker run -dti --name mi_con1 --entrypoint /bin/hostname ubuntu:focal
+  - `-d`: Ejecuta el contenedor en segundo plano (detached).
+  - `-t`: Asigna una pseudo-terminal.
+  - `-i`: Mantiene la entrada estándar abierta.
+  - `--entrypoint`: Reemplaza el comando por defecto y ejecuta `/bin/hostname` al iniciar.
+  - El comando a ejecutar normalmente va al final. Si usas `--entrypoint`, puedes no poner comando adicional.
+
+* Orden de los puertos con -p en docker
+  - Sintaxis: `-p PUERTO_HOST:PUERTO_CONTENEDOR`.
+
+* docker create --name mi_con4_web --expose 80 --expose 433 -P nginx
+  - `--expose`: Documenta puertos que estarán disponibles internamente, pero no se exponen automáticamente.
+  - `-P`: Asigna automáticamente puertos aleatorios del host a los puertos expuestos del contenedor.
+
+* docker start -a mi_con3_int
+  - `-a`: Adjunta el contenedor a la terminal. Muestra la salida estándar (logs o resultado de comandos).
+
+* Ejemplo práctico de docker exec
+  - `docker exec -it mi_con1 bash`
+  - Ejecuta una terminal interactiva (`bash`) dentro del contenedor `mi_con1`.
+
+* Qué poner en un volumen y cómo usarlo
+  - Ejemplo: `docker run -v mi_vol:/data ubuntu`
+    → Crea el volumen `mi_vol` y lo monta en `/data` del contenedor.
+    → Los archivos guardados ahí no se borran al eliminar el contenedor.
+  1. Volumen nombrado (Docker lo gestiona):
+   `docker run -v mi_vol:/data ubuntu`
+      → Crea el volumen `mi_vol` y lo monta en `/data` del contenedor.
+      → Ideal para guardar datos como bases de datos, logs, etc.
+      → Los archivos guardados ahí no se borran al eliminar el contenedor.
+  2. Usar una carpeta local:
+    `docker run -v $(pwd)/html:/usr/share/nginx/html nginx`
+      → Monta la carpeta `html` de tu PC en la ruta del contenedor.
+      → Los cambios en tu carpeta local se ven dentro del contenedor.
+
+* docker commit, push y build
+  - `docker commit contenedor_id nombre_imagen`
+    → Crea una imagen a partir del estado actual de un contenedor.
+  - `docker push usuario/nombre_imagen`
+    → Sube la imagen a Docker Hub u otro registro remoto.
+  - `docker build -t nombre_imagen .`
+    → Crea una imagen a partir de un Dockerfile en el directorio actual.
