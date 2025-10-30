@@ -38,8 +38,26 @@
 
 # Práctica 5:
 
+![alt text](images/p5.1.png)
+![alt text](images/p5.2.png)
+
 # Práctica 6:
 
 ![alt text](images/p3.3.png)
 ![alt text](images/p6.1.png)
 ![alt text](images/p6.2.png)
+
+# Práctica 7:
+
+## Prueba de conexión de Master:
+
+![alt text](images/p7.1.png)
+
+## Prueba de conexión de Nodo1:
+
+![alt text](images/p7.2.png)
+
+## Evidencia del funcionamiento y del Dashboard de Azure:
+
+![alt text](images/p7.3.png)
+![alt text](images/p7.4.png)

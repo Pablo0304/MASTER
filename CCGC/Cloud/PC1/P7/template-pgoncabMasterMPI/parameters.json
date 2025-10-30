@@ -1,0 +1,120 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "northeurope"
+        },
+        "networkSecurityGroupName": {
+            "value": "pgoncabMasterMPI-nsg"
+        },
+        "networkSecurityGroupRules": {
+            "value": [
+                {
+                    "name": "SSH",
+                    "properties": {
+                        "priority": 300,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "22"
+                    }
+                }
+            ]
+        },
+        "subnetId": {
+            "value": "/subscriptions/0f1afb25-a35d-4cb9-919d-851908fc6f26/resourceGroups/grpgoncabMPI/providers/Microsoft.Network/virtualNetworks/vnet-northeurope-1/subnets/snet-northeurope-1"
+        },
+        "publicIpAddressName": {
+            "value": "pgoncabMasterMPI-ip"
+        },
+        "publicIpAddressType": {
+            "value": "Static"
+        },
+        "publicIpAddressSku": {
+            "value": "Standard"
+        },
+        "virtualMachineName": {
+            "value": "pgoncabMasterMPI"
+        },
+        "virtualMachineComputerName": {
+            "value": "pgoncabMasterMPI"
+        },
+        "virtualMachineRG": {
+            "value": "grpgoncabMPI"
+        },
+        "osDiskType": {
+            "value": "Standard_LRS"
+        },
+        "osDiskDeleteOption": {
+            "value": "Delete"
+        },
+        "virtualMachineSize": {
+            "value": "Standard_B2s"
+        },
+        "networkInterfaceName": {
+            "value": "pgoncabmastermpi652"
+        },
+        "nicDeleteOption": {
+            "value": "Detach"
+        },
+        "hibernationEnabled": {
+            "value": false
+        },
+        "adminUsername": {
+            "value": "azureuser"
+        },
+        "enablePeriodicAssessment": {
+            "value": "ImageDefault"
+        },
+        "vnetLocation": {
+            "value": "northeurope"
+        },
+        "vnetExtendedLocation": {
+            "value": {}
+        },
+        "vnetVirtualNetworkName": {
+            "value": "vnet-northeurope-1"
+        },
+        "vnetResourceGroupName": {
+            "value": "grpgoncabMPI"
+        },
+        "vnetDeploymentName": {
+            "value": "network-interface-associated-virtual-network-20251030162611"
+        },
+        "vnetNatGatewaysWithNewPublicIpAddress": {
+            "value": []
+        },
+        "vnetNatGatewaysWithoutNewPublicIpAddress": {
+            "value": []
+        },
+        "vnetNatGatewayPublicIpAddressesNewNames": {
+            "value": []
+        },
+        "vnetNetworkSecurityGroupsNew": {
+            "value": []
+        },
+        "vnetProperties": {
+            "value": {
+                "subnets": [
+                    {
+                        "name": "snet-northeurope-1",
+                        "properties": {
+                            "addressPrefixes": [
+                                "172.17.0.0/24"
+                            ]
+                        }
+                    }
+                ],
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "172.17.0.0/16"
+                    ]
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,86 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value": "northeurope"
+        },
+        "networkSecurityGroupName": {
+            "value": "pgoncabNodoMPI-nsg"
+        },
+        "networkSecurityGroupRules": {
+            "value": [
+                {
+                    "name": "SSH",
+                    "properties": {
+                        "priority": 300,
+                        "protocol": "TCP",
+                        "access": "Allow",
+                        "direction": "Inbound",
+                        "sourceAddressPrefix": "*",
+                        "sourcePortRange": "*",
+                        "destinationAddressPrefix": "*",
+                        "destinationPortRange": "22"
+                    }
+                }
+            ]
+        },
+        "subnetId": {
+            "value": "/subscriptions/0f1afb25-a35d-4cb9-919d-851908fc6f26/resourceGroups/grpgoncabMPI/providers/Microsoft.Network/virtualNetworks/vnet-northeurope-1/subnets/snet-northeurope-1"
+        },
+        "virtualNetworkId": {
+            "value": "/subscriptions/0f1afb25-a35d-4cb9-919d-851908fc6f26/resourceGroups/grpgoncabMPI/providers/Microsoft.Network/virtualNetworks/vnet-northeurope-1"
+        },
+        "publicIpAddressName": {
+            "value": "pgoncabNodoMPI-ip"
+        },
+        "publicIpAddressType": {
+            "value": "Static"
+        },
+        "publicIpAddressSku": {
+            "value": "Standard"
+        },
+        "virtualMachineName": {
+            "value": "pgoncabNodoMPI"
+        },
+        "virtualMachineComputerName": {
+            "value": "pgoncabNodoMPI"
+        },
+        "virtualMachineRG": {
+            "value": "grpgoncabMPI"
+        },
+        "osDiskType": {
+            "value": "Standard_LRS"
+        },
+        "osDiskDeleteOption": {
+            "value": "Delete"
+        },
+        "virtualMachineSize": {
+            "value": "Standard_B2s"
+        },
+        "networkInterfaceName": {
+            "value": "pgoncabnodompi494"
+        },
+        "nicDeleteOption": {
+            "value": "Detach"
+        },
+        "hibernationEnabled": {
+            "value": false
+        },
+        "adminUsername": {
+            "value": "azureuser"
+        },
+        "enablePeriodicAssessment": {
+            "value": "ImageDefault"
+        },
+        "securityType": {
+            "value": "TrustedLaunch"
+        },
+        "secureBoot": {
+            "value": true
+        },
+        "vTPM": {
+            "value": true
+        }
+    }
+}

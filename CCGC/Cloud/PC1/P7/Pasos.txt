@@ -1,0 +1,12 @@
+Después de crear las MV en la misma subred y mismo Resource Group:
+1.- Comandos de la diapositiva 96 en todas las MV y nos quedaremos con las claves de cada una (en este caso sí se usó contraseña):
+Master: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCKOpD/pzR0S3AR4iwNdbU2Tjj5t54qT/Ca9N59hoCfOL6hqDyAL7B7n6Lhm1xQuaR3DejfA6DPdv7CIE0kA1wdtbd5q43IvKYhqfHz7ZJkFIM37AA1kxq709A8+p+A+XEe0p2C5uxxgJCqubk3GDxOyueAV/CGuPndEH/e6+PqbEU4TxJat4pnikTOo9Z2EPtvL/iCexv283T8GkNzZgNnvIn+Ffm/XzjhwYVZewK52LlRPC+9cO4HcsxmEUcAY8cz2UWhhlL/Tqdb8U3arJO+/FWCgJpMfjr5IngBtzRL1cYwnvqRCOAYvRnmoro/TeV2YjBCWZ9+Cc7W+zX+s0jEy+UWcG62ypnwZt+CE1rGCtmdwzhEA4EOe+YwVC+ncruHSHjjFhU5L2Q1HO7JxkfsAG4y19mCMzo3j+o9GNcOCCwX5xnfKwj+ZRoJx0JGsftB32l3FyLwWZ+j1E3eqjuFvcKSb9sYpJVql1+x/jxe2JC0FjAZ6oVAcpo27uAI1uU= azureuser@pgoncabMasterMPI
+Nodo1: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCrKVVtQ1UZPLjfyw4IpBT7Flrq/JaLy57VfoLY4XHhPs2cokJ1uK0P1Z5/9lBE+g59KF2FgNrAU/qJzWUstZehcV5IvfzkA7TxaBTGC7slEhT5lOPejAp+NBfPSumaYjJXLsW8me57dm9pMyiQrMSJ6LSxipYYAGl0ZFXZNpbr/ejuOr3HQU8dMPg5A5CoO0sQJdLUSAdusuVsdh0I3jkZrxbOMn2TOR+VXNjEncLzceYV9zR7qHMrglWlxnfuTUnKo993/FsGYl5dicgnkRAh0A4me/xYeRskm6c1+7wv+ARn1306hRYmyy+HEWGxk2Zb8L/WPcXlvwQq5CD5juyGlQrck57hS0tgQhDvL7BIdETlo5S9oCCnDCsiGnt+v3sKCz6Y5GaM3hh27d1krgngfKfLEv+cfodpyVAeI3AO5Wd1gx7VHEYoST+mpY40W9s0gsCz09UkP6s8rHSsbdI1LCrvVca603wUP0CIPUzVDE5r8ViDZBxr37FWE+CDUf0= azureuser@pgoncabNodoMPI
+
+2.- Meteremos esa clave "id_rsa.pub" en el archivo "authorized_keys" dentro del directorio ".ssh" de todas las MV a las que se quiere interconectar (lit. una bajo de la otra sin más espacios ni saltos de línea).
+
+3.- Podemos probar la conexión tal y como dice en esa diapositiva.
+
+4.- Pasamos a hacer lo que dice en la diapositiva 97 (creamos "machinefile" ¡en la raíz de la MV y solo la ip PRIVADA de CADA MÁQUINA! => lit. una bajo de la otra sin más espacios ni saltos de línea).
+4.1.- Notas: => En los nodos solo hay que hacer el paso que dice "En el resto de máquinas". Todo lo que no sea esto => SOLO se hace en Master.
+             => El comando scp mpihello maquina:/home/azureuser es la con la IP privada => "scp mpihello 172.17.0.5:/home/azureuser"
