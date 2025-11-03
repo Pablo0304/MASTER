@@ -61,3 +61,25 @@
 
 ![alt text](images/p7.3.png)
 ![alt text](images/p7.4.png)
+
+# Práctica 8:
+
+## Test con la MV B1ls:
+
+![alt text](images/p8.1.png)
+
+## Test con la MV B4ms:
+
+![alt text](images/p8.2.png)
+
+## Medias de los test:
+
+| Tipo de MV | dgefa | dgesl | total | kflops    |
+| ---------- | ----- | ----- | ----- | --------- |
+| **B1ls**   | 0.02  | 0     | 0.02  | 3735773,5 |
+| **B4ms**   | 0.02  | 0     | 0.02  | 3821234,5 |
+| **Media**  | 0.02  | 0     | 0.02  | 3778504   |
+
+## Evidencia de la existencia de las MV:
+
+![alt text](images/p8.3.png)
