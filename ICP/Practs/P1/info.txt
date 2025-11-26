@@ -1,0 +1,19 @@
+AWS Console Link: https://grycap-aws.signin.aws.amazon.com/console
+    User: alucloud85
+    Password: S9D&19y9pY]l
+
+CloudTrail-Tracker Link: https://cloudtrailtracker.cursocloudaws.net
+    User: alucloud85
+    Password: S9D&19y9pY]l
+
+Connect to an instance:
+    First:
+        SSH For Lab Machine: ssh alucloud85@lab.cursocloudaws.net
+            Password: XP4dohhT8r
+    Then:
+        SSH To EC2 Instance: ssh -i alucloud85-keypair.pem bitnami@3.239.108.56
+            Instance ID: i-0ad2b046983603d1a
+
+Windows EC2 Machine Credentials:
+    User: Administrator
+    Password: bb$fQ4Y(Pw.pk5)tXA!MH$LpOpPfxbhB

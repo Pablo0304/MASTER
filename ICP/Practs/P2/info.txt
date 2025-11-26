@@ -1,0 +1,9 @@
+4.4 AMI_ID: ami-04470684b9d7b0b00
+
+5 Instance 1:
+  ID: i-0691fceb4531d2790
+  AZ: us-east-1e
+
+5 Instance 2:
+  ID: i-0b9e4227b18e727b1
+  AZ: us-east-1c
