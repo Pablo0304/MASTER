@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Three Tier App !!!</title>
+    <style>
+        body { font-family: Arial; margin: 40px; background: #f3f3f3; }
+        .container { background: white; padding: 20px; border-radius: 6px; width: 400px; }
+        button { padding: 10px; margin-top: 10px; width: 100%; }
+        input { width: 100%; padding: 10px; margin-top: 10px; }
+        h2 { text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Three Tier App !!!</h2>
+
+    <input id="inc" type="number" placeholder="Increment value">
+    <button onclick="callAdd()">Add</button>
+
+    <button onclick="callGet()">Get Current Value</button>
+
+    <h3 id="result"> result will appear here</h3>
+    <h3> ------ </h3>
+</div>
+
+<script>
+class Bussiness_Logic_Proxy {
+    constructor(base_url) { this.base_url = base_url; }
+
+    async add(inc) {
+      console.log( "Bussines_Logic_Proxy.add() starts " )
+        const res = await fetch(`${this.base_url}/add/${inc}`, { method: "POST" });
+      console.log( "Bussines_Logic_Proxy.add() ending " )
+        return await res.json();
+    }
+    async get_value() {
+      console.log( "Bussines_Logic_Proxy.get_value() starts " )
+        const res = await fetch(`${this.base_url}/value`);
+      console.log( "Bussines_Logic_Proxy.get_value() ending " )
+        return await res.json();
+    }
+}
+
+const proxy = new Bussiness_Logic_Proxy("http://localhost:8000"); 
+
+
+// con la de antes (localhost) funciona
+
+// OJO: CORS se configura en el REST endpoint
+//const proxy = new Bussiness_Logic_Proxy("http://logic:8000"); // con esta no deja por culpa de CORS
+//const proxy = new Bussiness_Logic_Proxy("http://kkkklogic:8000"); // con esta no deja por culpa de CORS ?
+//  Cómo puede ser si kkkklogic no existe. Igual el problema es que el navegador no puede acceder a logic como DNS
+
+async function callAdd() {
+  console.log( " callAdd() starts " )
+    const inc = document.getElementById("inc").value;
+    const res = await proxy.add(inc);
+    document.getElementById("result").innerText = "New value: " + res.new_value;
+  console.log( " callGet() ends " )
+}
+
+async function callGet() {
+  console.log( " callGet() starts " )
+    const res = await proxy.get_value();
+    document.getElementById("result").innerText = "Current value: " + res.value;
+  console.log( " callGet() ends " )
+}
+</script>
+
+</body>
+</html>
+
