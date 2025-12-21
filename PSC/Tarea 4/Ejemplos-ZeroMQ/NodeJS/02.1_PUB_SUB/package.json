@@ -1,0 +1,15 @@
+{
+	"//": "--------------------------------------------------",
+	"name": "prueba-node.js-zeromq",
+	"description": "2019",
+	"license": "LGPL-3.0",
+	"version": "0.0.1",
+	"repository": "empty",
+	"scripts": {
+		"cliente": "node mainCliente.js",
+		"servidor": "node mainServidor.js"
+	},
+	"dependencies": {
+		"zeromq": "^5.2.0"
+	}
+}

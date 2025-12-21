@@ -1,0 +1,16 @@
+{
+	"//": "--------------------------------------------------",
+	"name": "chat-nodejs-zeromq",
+	"description": "Chat distribuido con ZeroMQ (PSC Tarea 3)",
+	"license": "LGPL-3.0",
+	"version": "0.0.1",
+	"repository": "empty",
+	"scripts": {
+		"servidor": "node mainChatServer.js",
+		"cliente": "node mainChatClient.js"
+	},
+	"dependencies": {
+		"zeromq": "^5.2.0"
+	}
+}
+

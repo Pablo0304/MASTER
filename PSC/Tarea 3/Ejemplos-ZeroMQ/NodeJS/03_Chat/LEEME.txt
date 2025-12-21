@@ -1,0 +1,171 @@
+Chat distribuido con ZeroMQ (Node.js)
+====================================
+
+Resumen
+-------
+
+Esta carpeta contiene una implementación sencilla de un **chat
+distribuido** basada en Node.js y ZeroMQ, que materializa el diseño
+validado de la Tarea 2 (clases `Message`, `Participant`, `Chat`,
+`MessageStore`, `Communication`).
+
+Ficheros principales
+--------------------
+
+- `mainChatServer.js`
+  - Proceso servidor del chat.
+  - Rol equivalente a la clase **Chat** del diseño.
+  - Usa:
+    - un socket `REP` en el puerto `5555` para recibir mensajes de los clientes
+      (similar a `POST /message` en el diseño REST).
+    - un socket `PUB` en el puerto `8688` para difundir mensajes a los
+      clientes (similar a la entrega de mensajes tras un `GET /message`).
+
+- `mainChatClient.js`
+  - Proceso cliente/participante del chat.
+  - Rol equivalente a la clase **Participant** del diseño.
+  - Usa:
+    - un socket `REQ` para enviar mensajes al servidor (equivalente a
+      `send_message()` en la librería de comunicación de la Tarea 2).
+    - un socket `SUB` para recibir mensajes difundidos por el servidor
+      (equivalente a `check_message()` pero ahora "push" en vez de polling).
+
+- `package.json`
+  - Proyecto Node con dependencia a `zeromq`.
+  - Scripts:
+    - `npm run servidor` → arranca `mainChatServer.js`.
+    - `npm run cliente`  → arranca `mainChatClient.js` (se pasa el nick a mano).
+
+Uso
+---
+
+1) Instalar dependencias (en esta carpeta):
+
+   npm install
+
+2) Arrancar el servidor de chat:
+
+   npm run servidor
+
+   ó bien:
+
+   node mainChatServer.js
+
+3) Arrancar varios clientes en distintas terminales, por ejemplo:
+
+   node mainChatClient.js Alice
+   node mainChatClient.js Bob
+   node mainChatClient.js Charlie
+
+4) Escribir mensajes en cualquiera de los clientes y observar cómo aparecen en todos los demás.
+
+Relación con el diseño de la Tarea 2
+------------------------------------
+
+El diseño original (Tarea 2) se desarrolló en un contexto REST
+(ver, por ejemplo, `Entregas/Tarea 1.2/Chat/src/*.py` y el documento
+`Entregas/Tarea 1.2/Tarea 1.2.pdf`). En aquel diseño:
+
+- **Message** era un contenedor de datos con:
+  - `nickName: Text`
+  - `message: Text`
+  - y un `timestamp` para ordenar mensajes.
+
+- **Participant** (cliente):
+  - tenía un nick.
+  - disponía de:
+    - `text_read()` que llamaba a `send_message()` de la librería REST.
+    - `message_arrived()` que mostraba los mensajes recibidos.
+  - arrancaba un bucle de UI (`run_ui()`).
+
+- **Chat** (servidor):
+  - recibía mensajes vía `POST /message`.
+  - llamaba a `distribute_message()` para guardarlos en una **MessageStore**
+    en memoria.
+  - los clientes hacían polling periódico (`check_message()`) con
+    `GET /message` para recuperar mensajes nuevos.
+
+En esta implementación con ZeroMQ:
+
+- **Message**:
+  - no se implementa como clase separada, pero se usa la misma estructura
+    lógica: `{ nickName, message, timestamp }`.
+  - en el servidor se reconstruye a partir de mensajes de texto recibidos
+    en el socket `REP` y se almacena en el array `mensajes`.
+
+- **Chat**:
+  - corresponde al proceso `mainChatServer.js`.
+  - `distribute_message()` del diseño se realiza de forma implícita cuando:
+    1. el servidor recibe `CHAT <nick> <timestamp> <texto...>` por `REP`,
+    2. lo guarda en `mensajes` (equivalente a `MessageStore.add()`),
+    3. y lo reenvía inmediatamente por `PUB` como:
+       `MSG <nick> <timestamp> <texto...>`.
+
+- **MessageStore**:
+  - en el diseño era una clase explícita y thread-safe.
+  - aquí se materializa como un array `mensajes` dentro de
+    `mainChatServer.js`. Al ser un único proceso Node.js con un hilo
+    de ejecución, no necesitamos un mecanismo explícito de bloqueo.
+
+- **Participant**:
+  - corresponde al proceso `mainChatClient.js`.
+  - `text_read()` se implementa a través de la lectura por consola
+    y la construcción de:
+    - `CHAT <nick> <timestamp> <texto...>` enviado por `REQ`.
+  - `message_arrived()` se implementa como la callback que se ejecuta
+    cuando llega un mensaje `MSG ...` por `SUB`, y lo muestra por pantalla.
+
+Relación diseño–realidad (REST vs ZeroMQ)
+-----------------------------------------
+
+Diferencias principales entre el diseño teórico REST y esta realidad
+con ZeroMQ:
+
+- En REST:
+  - los clientes realizan **polling** cada cierto tiempo (`check_message()`),
+    consultando `GET /message`.
+  - el servidor guarda los mensajes hasta que el cliente los pide.
+
+- En ZeroMQ:
+  - no hay polling: el servidor envía los mensajes a todos los clientes
+    conectados mediante `PUB/SUB` (modelo push).
+  - seguimos manteniendo un histórico en memoria (`mensajes`) para mantener
+    la analogía con `MessageStore`, aunque no es estrictamente necesario
+    para la difusión.
+
+A pesar de estas diferencias técnicas, se mantiene la estructura
+lógica del diseño:
+
+- un componente central **Chat** que recibe y redistribuye mensajes,
+- varios **Participants** que:
+  - producen mensajes a través de una API (ahora ZeroMQ en vez de REST),
+  - reciben mensajes producidos por otros participantes,
+- un modelo de datos de **Message** muy similar al de la Tarea 2.
+
+Ingeniería inversa del ejemplo proporcionado (Tarea 3)
+------------------------------------------------------
+
+Antes de implementar este chat se ha analizado el código de ejemplo
+proporcionado en el fichero `Tarea 3/Ejemplos-ZeroMQ.tgz`, en concreto:
+
+- `NodeJS/01.1_REQ-REP`:
+  - muestra cómo un cliente (`REQ`) envía peticiones al servidor (`REP`),
+    y cómo el servidor responde tras hacer algún trabajo simulado.
+  - se ha reutilizado la idea de usar `REP` para recibir mensajes de
+    los clientes, contestando con un `ACK` textual.
+
+- `NodeJS/02.1_PUB_SUB`:
+  - muestra cómo un `publisher` envía periódicamente mensajes y cómo
+    un `subscriber` los recibe y los imprime.
+  - se ha reutilizado este patrón para la difusión de mensajes del chat
+    desde el servidor hacia todos los clientes (canal `PUB/SUB` en 8688).
+
+La implementación del chat combina **ambos patrones**:
+
+- canal **clientes → servidor**: `REQ/REP` (puerto 5555).
+- canal **servidor → clientes**: `PUB/SUB` (puerto 8688).
+
+De esta forma se conecta el **diseño teórico** de la Tarea 2 con la
+**realidad** de los patrones de comunicación de ZeroMQ mostrados en
+los ejemplos de la Tarea 3.
+

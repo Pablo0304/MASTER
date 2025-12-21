@@ -1,0 +1,16 @@
+{
+	"//": "--------------------------------------------------",
+	"name": "berkeley-nodejs-zeromq",
+	"description": "Algoritmo de Berkeley con ZeroMQ (PSC)",
+	"license": "LGPL-3.0",
+	"version": "0.0.1",
+	"repository": "empty",
+	"scripts": {
+		"coordinador": "node mainCoordinator.js",
+		"cliente": "node mainClient.js"
+	},
+	"dependencies": {
+		"zeromq": "^5.2.0"
+	}
+}
+

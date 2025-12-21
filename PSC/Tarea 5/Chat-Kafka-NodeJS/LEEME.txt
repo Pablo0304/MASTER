@@ -1,0 +1,177 @@
+Chat distribuido con Kafka (Node.js)
+===================================
+
+Resumen
+-------
+
+Este ejemplo implementa el **chat** diseñado en la Tarea 2 usando
+**Kafka** como middleware de mensajería, manteniendo el mismo diseño
+general de alto nivel que en las tareas anteriores:
+
+- participantes (`Participant`) que envían y reciben mensajes
+- mensajes (`Message`) con `nickName`, `message` y `timestamp`
+- un componente servidor de chat (`Chat`) que centraliza la lógica
+  y almacena los mensajes en un `MessageStore` en memoria
+
+La diferencia con la Tarea 3 (ZeroMQ) es que ahora la comunicación se
+hace a través de Kafka (topics), en lugar de usar sockets REQ/REP y
+PUB/SUB directamente.
+
+Ficheros
+--------
+
+- `package.json`
+  - Proyecto Node con dependencia `kafkajs`.
+  - Scripts:
+    - `npm run servidor` → ejecuta `mainChatServerKafka.js`.
+    - `npm run cliente`  → ejecuta `mainChatClientKafka.js` (el nick se pasa como argumento).
+
+- `mainChatServerKafka.js`
+  - Rol equivalente a las clases **Chat** + **MessageStore** del diseño.
+  - Usa `kafkajs` para conectarse a un broker Kafka (por defecto en `localhost:9094`).
+  - Topics utilizados:
+    - `chat-input`:
+      - canal de entrada (clientes → servidor).
+      - contiene mensajes con estructura JSON:
+        `{ nickName, message, timestamp }`.
+    - `chat-broadcast`:
+      - canal de difusión (servidor → clientes).
+      - se vuelven a publicar los mismos mensajes en este topic.
+  - El servidor:
+    - consume de `chat-input`.
+    - almacena los mensajes en un array `mensajes` (equivalente a `MessageStore`).
+    - produce los mensajes en `chat-broadcast` para que los clientes los reciban.
+
+- `mainChatClientKafka.js`
+  - Rol equivalente a **Participant** + **Communication** del diseño.
+  - Parámetros:
+    - `node mainChatClientKafka.js [NICK]`
+  - El cliente:
+    - crea un productor Kafka que envía a `chat-input`.
+    - crea un consumidor Kafka que se suscribe a `chat-broadcast`.
+      - se usa un `groupId` único basado en el nick para que cada cliente
+        reciba **todos** los mensajes (incluidos los suyos propios).
+    - ofrece una interfaz de línea de comandos:
+      - prompt `(<nick>) >`.
+      - cada línea escrita se envía como mensaje JSON:
+        `{ nickName, message, timestamp }` al topic `chat-input`.
+      - cuando llega un mensaje desde `chat-broadcast`, se muestra por
+        pantalla como:
+        `[nickName]: texto`.
+
+Relación con el diseño de la Tarea 2
+------------------------------------
+
+En la Tarea 2 el chat se diseñó sobre REST:
+
+- `Participant`:
+  - tenía métodos como `text_read()` y `message_arrived()`.
+  - usaba una librería de comunicación (`CommunicationClient`) que:
+    - hacía `POST /message` (envío).
+    - hacía `GET /message` de forma periódica (polling).
+
+- `Chat` (servidor):
+  - recibía mensajes HTTP.
+  - llamaba a `distribute_message()` y los guardaba en `MessageStore`.
+  - servía los mensajes pendientes cuando el cliente los pedía.
+
+En esta implementación con Kafka:
+
+- **Message**:
+  - se materializa como objetos JSON con campos:
+    - `nickName`
+    - `message`
+    - `timestamp`
+  - es la misma estructura lógica que en el diseño original.
+
+- **Chat** + **MessageStore**:
+  - se implementan en `mainChatServerKafka.js`:
+    - consumir de `chat-input` ↔ recibir el mensaje (equivalente al `POST /message`).
+    - añadir al array `mensajes` ↔ `MessageStore.add()`.
+    - enviar a `chat-broadcast` ↔ distribuir a los participantes.
+
+- **Participant** + **Communication**:
+  - se implementan en `mainChatClientKafka.js`:
+    - la lógica de UI (leer del teclado, mostrar mensajes) ↔ `Participant`.
+    - el uso de `kafkajs` para enviar/recibir mensajes ↔ `CommunicationClient`.
+    - la función que se ejecuta cuando llega un mensaje de Kafka simula
+      el comportamiento de `message_arrived()`:
+      - imprime `[nick]: texto` en la consola.
+
+Relación diseño–realidad (REST / ZeroMQ / Kafka)
+------------------------------------------------
+
+Comparando las tres “realidades”:
+
+- **REST (Tarea 2)**:
+  - Comunicación basada en HTTP.
+  - Cliente hace polling (`GET /message`) para obtener mensajes.
+  - Servidor guarda mensajes y responde cuando el cliente pregunta.
+
+- **ZeroMQ (Tarea 3)**:
+  - Comunicación basada en sockets:
+    - `REQ/REP` (clientes → servidor).
+    - `PUB/SUB` (servidor → clientes).
+  - No hay polling HTTP; los mensajes se envían directamente a través
+    de los sockets.
+
+- **Kafka (Tarea 5)**:
+  - Comunicación desacoplada a través de topics:
+    - `chat-input` para entrada.
+    - `chat-broadcast` para salida.
+  - El servidor se comporta como un consumidor (del topic de entrada)
+    y a la vez como productor (del topic de difusión).
+  - Los clientes también son productores (cuando escriben) y
+    consumidores (cuando reciben mensajes).
+
+En los tres casos se mantiene el **mismo diseño de alto nivel**:
+
+- Entidad `Chat` central que recibe y distribuye mensajes.
+- Participantes que producen y consumen `Message`.
+- `MessageStore` que representa el almacenamiento de mensajes.
+
+Lo que cambia es solamente la **tecnología de comunicación**:
+HTTP ↔ ZeroMQ ↔ Kafka.
+
+Cómo ejecutar el ejemplo
+------------------------
+
+1) Arrancar Kafka con el `docker-compose` proporcionado:
+
+   - Desde la carpeta raíz de la Tarea 5 (donde está
+     `docker-compose-1nodo-kafka.yml`):
+
+     docker compose -f docker-compose-1nodo-kafka.yml up
+
+   - Esto lanza un broker Kafka accesible en `localhost:9094`.
+
+2) Instalar dependencias del proyecto de chat:
+
+   cd Tarea 5/Chat-Kafka-NodeJS
+   npm install
+
+3) Arrancar el servidor de chat (en una terminal):
+
+   npm run servidor
+
+4) Arrancar varios clientes (cada uno en su terminal) con distintos nicks:
+
+   cd Tarea 5/Chat-Kafka-NodeJS
+   node mainChatClientKafka.js Alice
+
+   cd Tarea 5/Chat-Kafka-NodeJS
+   node mainChatClientKafka.js Bob
+
+5) Escribir mensajes en cualquiera de los clientes y comprobar cómo se
+   ven en todos ellos.
+
+Notas
+-----
+
+- El código está escrito en Node.js moderno usando `async/await`
+  con la librería `kafkajs`.
+- Cada cliente tiene su propio `groupId` para el consumidor, de forma
+  que todos los mensajes del topic `chat-broadcast` se entregan a
+  todos los participantes (no se reparten como en un grupo típico de
+  procesamiento paralelo).
+

@@ -1,0 +1,34 @@
+Estoy haciendo la asignatura de PSC en un máster y tengo una práctica sobre ZeroMQ y la implementación de un chat distribuido.
+
+Contexto de mi proyecto (muy importante):
+
+Ruta del proyecto: Tarea 3/Ejemplos-ZeroMQ/NodeJS.
+Ya tengo dos ejemplos sencillos de ZeroMQ en Node.js:
+
+01.1_REQ-REP con:
+mainServidor.js (socket rep)
+mainCliente.js y mainClienteAlterante.js (socket req)
+arrancarClientes.sh
+LEEME.txt
+02.1_PUB_SUB con:
+mainPublisher.js y mainPublisherRecursivo.js (socket pub)
+mainSubscriber.js (socket sub)
+LEEME.txt
+package.json con dependencia a zeromq
+En la Tarea 2 ya hice el diseño teórico de un chat (clases Message, Participant, Chat, MessageStore, etc.), que viene documentado en:
+
+Tarea 1.2.pdf
+Código de referencia en:
+message.py
+message_store.py
+server.py
+participant.py
+communication.py
+LO QUE QUIERO QUE PROGRAMES (NÚCLEO DEL ENCARGO)
+Quiero que implementes el diseño validado del chat de la Tarea 2 en Node.js usando ZeroMQ, siguiendo ese diseño (Message, Participant, Chat, MessageStore) y apoyándote en los ejemplos 01.1_REQ-REP y 02.1_PUB_SUB.
+
+La implementación debe integrarse en la misma estructura de ejemplos, creando una nueva carpeta dentro de Tarea 3/Ejemplos-ZeroMQ/NodeJS (por ejemplo 03_Chat), con su package.json, un proceso servidor de chat y un proceso cliente de chat, usando:
+REQ/REP para el canal clientes → servidor (envío de mensajes del chat).
+PUB/SUB para el canal servidor → clientes (difusión de mensajes a todos los participantes).
+
+Además, debes tener en cuenta la relación entre el diseño teórico del chat en la Tarea 2 (REST) y esta implementación real con ZeroMQ (patrones REQ/REP y PUB/SUB).

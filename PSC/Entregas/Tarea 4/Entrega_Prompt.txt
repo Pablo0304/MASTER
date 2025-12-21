@@ -1,0 +1,23 @@
+Estoy haciendo la asignatura de PSC en un máster y tengo una práctica sobre ZeroMQ y el algoritmo de sincronización de relojes de Berkeley.
+
+Contexto de mi proyecto (muy importante):
+
+Ruta del proyecto: Tarea 4/Ejemplos-ZeroMQ/NodeJS.
+Ya tengo dos ejemplos sencillos de ZeroMQ en Node.js:
+01.1_REQ-REP con:
+mainServidor.js (socket rep)
+mainCliente.js y mainClienteAlterante.js (socket req)
+arrancarClientes.sh
+LEEME.txt
+02.1_PUB_SUB con:
+mainPublisher.js y mainPublisherRecursivo.js (socket pub)
+mainSubscriber.js (socket sub)
+LEEME.txt
+package.json con dependencia a zeromq
+
+En la Tarea 2 ya hice el diseño teórico del algoritmo de Berkeley (diagramas de procesos, canales, mensajes, etc.), que viene documentado en:
+Tarea 2.pdf
+Apuntes_Notacion_Diseño.pdf
+
+LO QUE QUIERO QUE PROGRAMES (NÚCLEO DEL ENCARGO)
+Quiero que implementes el algoritmo de Berkeley en Node.js usando ZeroMQ, siguiendo el diseño de la Tarea 2, y que lo integres en la estructura que ya tengo de ejemplos.

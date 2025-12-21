@@ -1,0 +1,16 @@
+{
+  "//": "--------------------------------------------------",
+  "name": "chat-kafka-nodejs-psc",
+  "description": "Chat distribuido usando Kafka (PSC Tarea 5)",
+  "license": "LGPL-3.0",
+  "version": "0.0.1",
+  "repository": "empty",
+  "scripts": {
+    "servidor": "node mainChatServerKafka.js",
+    "cliente": "node mainChatClientKafka.js"
+  },
+  "dependencies": {
+    "kafkajs": "^2.2.4"
+  }
+}
+

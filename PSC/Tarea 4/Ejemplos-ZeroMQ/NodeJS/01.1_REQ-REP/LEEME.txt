@@ -1,0 +1,8 @@
+
+request REQ (cliente), responder REP (servidor)
+
+REQ --
+     |---> REP
+REQ --
+
+npm install 

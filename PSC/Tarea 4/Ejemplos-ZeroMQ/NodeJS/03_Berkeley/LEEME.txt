@@ -1,0 +1,90 @@
+Algoritmo de Berkeley con ZeroMQ (Node.js)
+==========================================
+
+Resumen
+-------
+
+En esta carpeta se encuentra una implementación sencilla del
+algoritmo de Berkeley usando Node.js y ZeroMQ, siguiendo el
+diseño realizado en la tarea 2:
+
+- un proceso coordinador (mainCoordinator.js)
+- varios procesos clientes (mainClient.js)
+- comunicación mediante envío de mensajes por canales
+  bien definidos
+
+Relación con el diseño de la tarea 2
+------------------------------------
+
+En la tarea 2 se definían procesos abstractos que:
+
+- intercambian mensajes de petición de hora
+- calculan una hora media
+- envían ajustes a cada participante
+
+En esta implementación:
+
+- el **coordinador**:
+  - usa un socket PUB para difundir:
+    - órdenes PREGUNTA_HORA
+    - mensajes de ajuste AJUSTE ...
+  - usa un socket REP para recibir las horas de los clientes
+  - calcula la hora media incluyendo su propia hora
+  - envía a cada cliente el ajuste que debe aplicar
+
+- cada **cliente**:
+  - mantiene un "reloj lógico" local = Date.now() + desfase
+  - recibe PREGUNTA_HORA por un socket SUB
+  - envía su hora al coordinador usando un socket REQ
+  - recibe AJUSTE por SUB y actualiza su desfase
+
+Las entidades del diseño ("proceso coordinador", "proceso cliente",
+"canal de difusión de órdenes", "canal de envío de horas") se
+corresponden directamente con:
+
+- Coordinador  -> mainCoordinator.js
+- Cliente      -> mainClient.js
+- Canal orden  -> socket PUB/SUB en puerto 8688
+- Canal horas  -> socket REQ/REP en puerto 5555
+
+Uso
+---
+
+1) Instalar dependencias (en esta carpeta):
+
+   npm install
+
+2) Arrancar el coordinador (por ejemplo, esperando 2 clientes):
+
+   node mainCoordinator.js 2 15000
+
+   - primer parámetro: número de clientes que participan
+   - segundo parámetro: periodo entre rondas en milisegundos
+     (opcional; por defecto 10000 ms)
+
+3) Arrancar varios clientes en otras terminales, por ejemplo con
+   desfases diferentes:
+
+   node mainClient.js A 0
+   node mainClient.js B 3000
+   node mainClient.js C -2000
+
+4) Observar en la salida de cada proceso cómo:
+
+   - el coordinador lanza rondas PREGUNTA_HORA
+   - los clientes envían su hora local
+   - el coordinador calcula una media
+   - los clientes ajustan su reloj lógico
+
+Referencia al diseño original
+-----------------------------
+
+El documento de diseño entregado en la tarea 2 (por ejemplo,
+Entregas/Tarea 2.pdf y apuntes en Tarea 2/Apuntes_Notacion_Diseño.pdf)
+describe el algoritmo de forma abstracta. Esta implementación es
+una realización concreta en Node.js que respeta la estructura del
+diseño (roles de procesos y mensajes), anotando en comentarios
+las pequeñas diferencias entre el modelo teórico y la realidad
+del código (p.ej. gestión de rondas, timers, formato textual
+de mensajes, uso de Date.now(), etc.).
+

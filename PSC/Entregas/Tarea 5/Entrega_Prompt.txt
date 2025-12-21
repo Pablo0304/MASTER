@@ -1,0 +1,154 @@
+Estoy haciendo la asignatura de PSC en un máster y tengo una práctica
+sobre middleware de mensajería (Kafka / NATS) y un chat distribuido.
+
+Contexto de mi proyecto (muy importante)
+------------------------------------------------
+
+En tareas anteriores he ido construyendo y refinando el diseño de un
+chat:
+
+- En la **Tarea 2**:
+  - Diseñé el chat desde el punto de vista de arquitectura:
+    - clases `Message`, `Participant`, `Chat`, `MessageStore`,
+      `Communication`.
+    - interfaces lógicas de cada método (`text_read`, `message_arrived`,
+      `distribute_message`, etc.).
+  - Hice una implementación de referencia basada en **REST** en Python:
+    - `Entregas/Tarea 1.2/Chat/src/message.py`
+    - `Entregas/Tarea 1.2/Chat/src/message_store.py`
+    - `Entregas/Tarea 1.2/Chat/src/server.py`
+    - `Entregas/Tarea 1.2/Chat/src/participant.py`
+    - `Entregas/Tarea 1.2/Chat/src/communication.py`
+
+- En la **Tarea 3**:
+  - Implementé el mismo diseño del chat pero usando **ZeroMQ** en Node.js:
+    - `Tarea 3/Ejemplos-ZeroMQ/NodeJS/03_Chat/mainChatServer.js`
+    - `Tarea 3/Ejemplos-ZeroMQ/NodeJS/03_Chat/mainChatClient.js`
+  - Manteniendo el mismo diseño de alto nivel:
+    - `Chat` como servidor central.
+    - `Participant` como cliente.
+    - `Message` como contenedor con `nickName`, `message`, `timestamp`.
+  - Solo cambié la capa de comunicación: HTTP → ZeroMQ (REQ/REP + PUB/SUB).
+
+Ahora, en la **Tarea 5**, quiero refinar otra vez el diseño del chat
+para usar **Kafka** en lugar de sockets / ZeroMQ.
+
+En la carpeta de la Tarea 5 dispongo de:
+
+- `Introduccion-Kafka.pdf`
+- `Ejemplo-Kafka.tgz`
+- Fichero `docker-compose-1nodo-kafka.yml` que levanta un broker Kafka
+  en modo KRaft (sin Zookeeper), exponiendo:
+  - `localhost:9094` para los clientes del host.
+
+Además también hay material sobre NATS, pero en esta entrega quiero
+centrarme en Kafka.
+
+Objetivo de esta tarea
+----------------------
+
+La enunciado dice:
+
+> Lee y estudia la documentación adjunta.
+> Refina el diseño del chat para usar Nats (o Kafka).
+> Implementa el diseño usando Nats (o Kafka).
+> IMPORTANTE: el diseño general (de alto nivel) de la aplicación debe ser
+> EL MISMO que se usó en la pasada ocasión. Lo que cambiará es la
+> implementación de las partes del código que tengan que ver con la
+> comunicación (antes sockets, ahora un middleware).
+> Incluye el prompt que has usado para generar el código.
+
+Yo quiero implementarlo con **Kafka** usando **Node.js**.
+
+Lo que quiero que programes (núcleo del encargo)
+------------------------------------------------
+
+Quiero que implementes una versión del chat distribuido usando Kafka
+como middleware de mensajería, manteniendo el **mismo diseño de alto
+nivel** de la Tarea 2 / Tarea 3:
+
+- Entidades:
+  - `Message`: con al menos `nickName: Text`, `message: Text`,
+    `timestamp: Number`.
+  - `Participant`: representa a un cliente/usuario del chat.
+  - `Chat`: componente servidor que recibe y distribuye mensajes.
+  - `MessageStore`: almacenamiento en memoria de los mensajes.
+
+- Comportamiento:
+  - Cada `Participant`:
+    - escribe mensajes en una interfaz de consola.
+    - los envía al servidor (antes era HTTP o ZeroMQ, ahora Kafka).
+    - recibe mensajes de otros participantes y los muestra.
+  - El `Chat`:
+    - recibe mensajes de los participantes.
+    - los almacena en `MessageStore`.
+    - los redistribuye a todos los participantes conectados.
+
+La diferencia es que ahora la comunicación se apoya en **Kafka**:
+
+- No quiero usar sockets directos (ZeroMQ) ni HTTP.
+- Quiero que Chat y Participant se comuniquen a través de **topics**
+  de Kafka.
+
+Tecnología y restricciones
+--------------------------
+
+- Lenguaje: **Node.js**.
+- Middleware: **Kafka**.
+- Librería recomendada para Node.js: `kafkajs`.
+- El broker Kafka se levanta con el `docker-compose-1nodo-kafka.yml`
+  proporcionado, que expone:
+  - `localhost:9094` como listener externo.
+
+Topología deseada con Kafka
+---------------------------
+
+Quiero que diseñes la comunicación del chat usando dos topics:
+
+- Topic `chat-input`:
+  - canal de entrada (clientes → servidor).
+  - cada vez que un participante escribe un mensaje, se envía un
+    mensaje Kafka a este topic.
+
+- Topic `chat-broadcast`:
+  - canal de difusión (servidor → clientes).
+  - el servidor lee de `chat-input`, almacena el mensaje y lo vuelve
+    a publicar en `chat-broadcast`.
+  - todos los clientes se suscriben a este topic para recibir los
+    mensajes que produce el servidor.
+
+Esquema de roles:
+
+- **Servidor de chat** (equivalente a `Chat` + `MessageStore`):
+  - Consumer de `chat-input`.
+  - Producer de `chat-broadcast`.
+
+- **Cliente/participante** (equivalente a `Participant` + `Communication`):
+  - Producer de `chat-input`.
+  - Consumer de `chat-broadcast`.
+
+Requisito importante:
+
+- Cada cliente debe recibir **todos** los mensajes difundidos (incluidos
+  los que envía él mismo).
+  - Por tanto, cada cliente debe usar un `groupId` **distinto** al
+    suscribirse a `chat-broadcast`, para que Kafka no reparta mensajes
+    entre consumidores, sino que cada uno tenga su propia copia.
+
+Formato de los mensajes (payload Kafka)
+---------------------------------------
+
+Quiero que los mensajes Kafka sean objetos JSON que representen la
+estructura `Message` del diseño:
+
+```json
+{
+  "nickName": "<nick del usuario>",
+  "message": "<texto del mensaje>",
+  "timestamp": 1234567890
+}
+```
+
+En el código puedes trabajarlos como objetos JS y serializarlos con
+`JSON.stringify` al producir, y parsearlos con `JSON.parse` al
+consumir.
