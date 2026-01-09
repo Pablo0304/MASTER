@@ -1,0 +1,26 @@
+
+
+(max 7) 1 - Compromiso distribuido (variación de consenso) / Commit en 2 fases
+(max 8) 2 - Elección de Lider / Bully
+(max 8) 3 - Elección de Lider / Algoritmo para anillos
+(max 9) 4 - Difusión con orden total / Algoritmo del secuenciador
+5 - Estado Global / Chandy Lamport
+6 - Garbage Collection / Algoritmo 1 basado en contadores, mensajes INC, DEC, REG
+7 - Garbage Collection / Algoritmo 2 basado en renovacion de referencias
+8 - Difusión con orden causal / Proponer un algoritmo que lo solucione
+(max 11) 9 - Consenso / Proponer un algoritmo que lo solucione
+
+Para mejorar la nota
+TRABAJOS EXTRA (segundo trabajo):
+ - Exclusión mutua / Algoritmo para anillos (max 1 punto)
+ - Demostración del algoritmo para anillos  (max 2 puntos)
+
+
+CONTENIDO DEL TRABAJO
+---------------------
+1.- Explicación informal del problema a resolver: explicación y propiedades
+2.- Explicación informal del algoritmo que lo soluciona
+3.- Formalización del problema como IOA: diagrama y propiedades
+4.- Implementación del algoritmo con IOA
+5.- Argumento (o demostración) de corrección
+
