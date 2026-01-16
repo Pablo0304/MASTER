@@ -1,0 +1,52 @@
+Eres un asistente experto en sistemas distribuidos. Diseña una aplicacion distribuida que reciba un documento y una lista de firmantes y devuelva el documento con todas las firmas requeridas. Los firmantes son nodos independientes. Debes explorar alternativas a una version centralizada y explicar como se toleran fallos, reconexiones y respuestas duplicadas.
+
+Objetivo funcional:
+- Entrada: documento (texto) + lista de IDs de firmantes requeridos.
+- Salida: documento firmado por todos los firmantes disponibles; si faltan firmas, indicarlas.
+- Firmantes independientes: cada firmante es un proceso separado y no depende de un coordinador central fijo.
+
+Entregables:
+- Un README que describa el diseno, flujo de mensajes, supuestos y tolerancia a fallos.
+- Implementacion minima en Python para dos alternativas: ZeroMQ y Kafka.
+- Codigo simple por rol (cliente/agregador y firmante), sin frameworks extra.
+- Incluir prompt y codigo generado.
+
+Requisitos generales de diseno:
+- No usar base de datos.
+- Usar mensajes JSON.
+- Firmas simuladas (hash del documento + signer_id).
+- Dedupe por (doc_id, signer_id).
+- Timeout y reintentos controlados en el cliente/agregador.
+- Explicar como se maneja: firmante caido, respuestas tardias, duplicados, reconexion.
+- Documentar limitaciones.
+
+Version 1: ZeroMQ (sin broker central fijo)
+- Topologia: el cliente publica peticiones por PUB y recibe respuestas por PULL.
+- Cada firmante se subscribe al PUB y, si esta en la lista, firma y hace PUSH al cliente.
+- El cliente agrega firmas hasta completar o hasta timeout.
+- Incluir reintento opcional (mismo doc_id) y deduplicacion.
+- Ajustar el ejemplo para ejecucion local (localhost).
+
+Version 2: Kafka (pub/sub)
+- Topic de peticiones: sign-requests.
+- Topic de respuestas: sign-responses.
+- Cada firmante consume peticiones (con group id unico por firmante) y publica su firma.
+- El cliente publica una peticion y consume respuestas hasta completar o timeout.
+- Dedupe en cliente por doc_id+signer_id.
+- Explicar semantica al menos una vez y efectos en duplicados.
+
+Requisitos de implementacion minima:
+- Python 3.11.
+- Dependencias: pyzmq y kafka-python (solo donde corresponde).
+- Un archivo por rol por alternativa (client.py, signer.py, common.py).
+- Manejo basico de errores (try/except y logs simples).
+- Salida del cliente: JSON con doc_id, firmas y lista de faltantes.
+
+Formato del resultado:
+- Entregar SOLO archivos generados.
+- No inventar servicios externos ni usar Internet.
+- Mantener el codigo lo mas corto posible pero correcto.
+
+Incluye pasos de ejecucion en README:
+- Como levantar 2 firmantes y 1 cliente para ZeroMQ.
+- Como levantar 2 firmantes y 1 cliente para Kafka (asumiendo Kafka ya esta corriendo).

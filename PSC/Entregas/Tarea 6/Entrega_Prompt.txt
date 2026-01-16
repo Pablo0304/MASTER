@@ -1,0 +1,163 @@
+Prompt 1 — Modelo de datos + DB (tablas, estados, migraciones):
+Eres un ingeniero backend. Genera el modelo de datos y la capa de persistencia para un mini-FaaS.
+Requisitos:
+- Lenguaje: Python 3.11
+- DB: PostgreSQL
+- ORM: SQLAlchemy 2.0 (modo declarativo) + Alembic para migraciones
+- Entidades:
+  - lambdas: id (UUID PK), nombre, runtime, owner_id (nullable), code_ref (ruta/objeto), created_at
+  - encargos: id (UUID PK), lambda_id (FK), input_ref, status (ENUM: PENDIENTE, EN_EJECUCION, OK, ERROR), worker_id (nullable), created_at, started_at, finished_at, error_msg (nullable)
+  - resultados: encargo_id (UUID PK/FK), exit_code (int), stdout_ref, stderr_ref, output_ref (nullable)
+- Debe existir índice por status en encargos y por lambda_id.
+- Incluye un método/función de “claim” atómico (SQL) que intente asignar un encargo PENDIENTE a un worker (set status=EN_EJECUCION, worker_id, started_at) y devuelva si tuvo éxito.
+- Devuelve estructura de carpetas y contenido de archivos: models.py, db.py, alembic/ (env.py, versions/...), requirements.txt.
+Salida:
+- Devuelve SOLO código (contenido de archivos) en bloques de código por archivo, con el nombre del archivo como encabezado.
+
+Prompt 2 — Servicio de Almacenamiento (faas-storage):
+Genera el microservicio "faas-storage" para un mini-FaaS.
+Stack:
+- Python 3.11 + FastAPI
+- PostgreSQL (usa las tablas lambdas/encargos/resultados ya definidas)
+- SQLAlchemy 2.0
+- Persistencia de ficheros en un volumen compartido (ruta base /data)
+- OpenAPI automático de FastAPI
+Endpoints internos (REST):
+1) POST /lambdas
+   - Recibe: multipart/form-data con archivo (lambda file) + JSON meta {nombre, runtime, ownerId?}
+   - Guarda el archivo en /data/lambdas/{idLambda}/lambda.bin (o .py)
+   - Inserta registro en tabla lambdas con code_ref apuntando al path
+   - Responde: {idLambda}
+2) GET /lambdas
+   - Responde lista: [{idLambda, nombre, runtime}]
+3) GET /lambdas/{idLambda}/code
+   - Devuelve el archivo de lambda (stream) o un JSON con code_ref (elige una opción y documenta)
+4) POST /encargos/{idEncargo}/resultado
+   - Recibe: JSON res {exitCode, stdout, stderr, output?} (puedes guardar stdout/stderr/output a ficheros en /data/results/{idEncargo}/...)
+   - Inserta/actualiza tabla resultados
+   - Actualiza estado en encargos a OK o ERROR (si exitCode != 0 => ERROR) y finished_at
+5) GET /encargos/{idEncargo}/resultado
+   - Devuelve: {status, resultado?} donde resultado incluye refs o contenido básico
+Extras:
+- Validación con Pydantic
+- Manejo de errores y códigos HTTP razonables
+- Logging básico
+- Dockerfile para este servicio
+Salida:
+- Devuelve SOLO el código, con estructura de proyecto lista para docker.
+
+Prompt 3 — Servicio de Ejecución / Scheduler (faas-execution) con REST pull:
+Genera el microservicio "faas-execution" para un mini-FaaS.
+Stack:
+- Python 3.11 + FastAPI
+- PostgreSQL + SQLAlchemy 2.0
+- Debe usar la tabla encargos y el mecanismo de claim atómico
+Responsabilidades:
+- Crear encargos y asignarlos a workers
+- Exponer un endpoint para que los workers pidan trabajo (REST pull)
+Endpoints internos:
+1) POST /encargos
+   - Body: {idLambda, inputRef}
+   - Crea encargo en DB con status=PENDIENTE, created_at
+   - Responde: {idEncargo}
+2) GET /encargos/next?workerId=...
+   - Devuelve (si hay trabajo):
+     {idEncargo, idLambda, inputRef}
+   - Si no hay:
+     204 No Content o {noHay:true} (elige y documenta)
+   - Implementación: selecciona un encargo PENDIENTE y haz claim ATÓMICO (si falla, reintenta un número pequeño de veces)
+3) POST /encargos/{idEncargo}/heartbeat (opcional)
+   - Para marcar que el worker sigue vivo (puede ser stub)
+4) POST /encargos/recover (opcional)
+   - Reencola encargos EN_EJECUCION cuyo started_at sea más viejo que un timeout configurable
+Extras:
+- Variables de entorno: DB_URL, CLAIM_TIMEOUT_SECONDS
+- Logging
+- Dockerfile
+Salida:
+- SOLO código listo para ejecutar en Docker.
+
+Prompt 4 — API pública (faas-api) que usa storage+execution:
+Genera el microservicio "faas-api" (API pública) para un mini-FaaS thin client.
+Stack:
+- Python 3.11 + FastAPI
+- Este servicio NO accede a DB directamente: llama por HTTP a faas-storage y faas-execution
+- Config vía env: STORAGE_URL, EXECUTION_URL
+- Manejo de errores y timeouts HTTP (httpx)
+Endpoints públicos:
+1) POST /guardar_lambda
+   - multipart: archivo λ + meta {nombre, runtime, ownerId?}
+   - Reenvía al storage (POST /lambdas)
+   - Responde: {idLambda}
+2) GET /lambdas
+   - Reenvía a storage (GET /lambdas)
+   - Responde lista
+3) POST /dejar_encargo
+   - Body: {idLambda, datosBase64?} O multipart con archivo de datos (elige UNA forma y documenta)
+   - Guarda los datos de entrada en storage (puedes: a) crear endpoint en storage para subir input, o b) que el api guarde en /data y use inputRef)
+   - Llama a execution (POST /encargos) con {idLambda, inputRef}
+   - Responde: {idEncargo}
+4) GET /resultado/{idEncargo}
+   - Reenvía a storage (GET /encargos/{idEncargo}/resultado)
+   - Responde: {status, resultado?}
+Extras:
+- Define modelos Pydantic (LambdaInfo, EncargoRequest, ResultadoResponse)
+- Dockerfile
+Salida:
+- SOLO código.
+
+Prompt 5 — Worker (worker x N):
+Genera el programa "worker" para el mini-FaaS.
+Stack:
+- Python 3.11
+- Config env: EXECUTION_URL, STORAGE_URL, WORKER_ID, POLL_INTERVAL_SECONDS, EXEC_TIMEOUT_SECONDS
+- El worker funciona en bucle infinito:
+  1) GET {EXECUTION_URL}/encargos/next?workerId=WORKER_ID
+  2) Si no hay trabajo: sleep(POLL_INTERVAL_SECONDS)
+  3) Si hay: recibe {idEncargo, idLambda, inputRef}
+  4) Obtiene el código λ desde storage:
+     - GET {STORAGE_URL}/lambdas/{idLambda}/code
+  5) Lee los datos de input desde el inputRef (si es path compartido) o desde storage (si decides endpoint)
+  6) Ejecuta λ de forma segura mínima:
+     - Si runtime=python: python3 lambda.py (stdin=input) y captura stdout/stderr/exitcode
+     - Timeout de ejecución
+  7) POST resultado a storage:
+     - POST {STORAGE_URL}/encargos/{idEncargo}/resultado con {exitCode, stdout, stderr, output?}
+Requisitos clave:
+- Captura stdout/stderr completos (con límite razonable)
+- Maneja excepciones y siempre reporta ERROR si falla
+- Logging claro
+Salida:
+- SOLO código + Dockerfile para el worker.
+
+Prompt 6 — Docker (docker-compose + Dockerfiles + volúmenes)
+Crea la infraestructura Docker para levantar el mini-FaaS completo.
+Servicios:
+- postgres (con volumen)
+- faas-storage
+- faas-execution
+- faas-api
+- worker (al menos 2 réplicas mediante docker-compose o instrucciones para escalar)
+- volumen compartido /data montado en storage + workers (+ api si lo necesita)
+Requisitos:
+- Red interna docker
+- Variables de entorno claras en compose
+- Healthchecks básicos (si puedes)
+- README.md con comandos:
+  - docker compose up --build
+  - ejemplo curl para subir lambda, dejar encargo y consultar resultado
+Salida:
+- SOLO los archivos: docker-compose.yml, Dockerfile(s) y README.md.
+Prompt 7 — Prueba E2E (smoke test)
+Genera un script de prueba end-to-end (E2E) para el mini-FaaS.
+Requisitos:
+- Lenguaje: Python 3.11 (requests)
+- Flujo:
+  1) Subir una lambda de ejemplo (python) que lea stdin y escriba stdout (p.ej. multiplica un número)
+  2) Pedir lista de lambdas y comprobar que aparece
+  3) Dejar un encargo con datos de entrada
+  4) Polling a /resultado/{idEncargo} hasta OK/ERROR con timeout
+  5) Validar que el stdout coincide con lo esperado
+- Debe funcionar contra faas-api en http://localhost:8080 (o el puerto que elijas)
+Salida:
+- SOLO el archivo test_e2e.py y, si hace falta, la lambda de ejemplo.
